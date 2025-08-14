@@ -73,4 +73,37 @@
         justify-content: center;
 
     }
+    
+    @media screen and (max-width: 768px) {
+        width: 120px;
+        height: 100px;
+        padding: 5px;
+        
+        .inner1 {
+            .inputDiv {
+                font-size: 1.5rem;
+                width: 1.8rem;
+            }
+        }
+        
+        .inner2 {
+            font-size: 1.1rem;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        width: 100px;
+        height: 90px;
+        
+        .inner1 {
+            .inputDiv {
+                font-size: 1.3rem;
+                width: 1.6rem;
+            }
+        }
+        
+        .inner2 {
+            font-size: 1rem;
+        }
+    }
 }

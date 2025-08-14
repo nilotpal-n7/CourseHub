@@ -36,7 +36,7 @@ const Contrisection = () => {
         <Container color={"light"}>
             <div className="c_content">
                 <div className="sub_head">
-                    <SubHeading text={"MY CONTRIBUTIONS"} type={"bold"} color={"black"} />
+                    <SubHeading text={"MY CONTRIBUTIONS"} type={"bold"} color={"black"} algn={"center"} />
                 </div>
                 {!(myContributions.length === 0) ? (
                     ContriCard

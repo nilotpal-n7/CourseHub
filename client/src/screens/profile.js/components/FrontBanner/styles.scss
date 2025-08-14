@@ -98,5 +98,79 @@
     .branch {
         max-width: 500px;
     }
+}
 
+@media screen and (max-width: 768px) {
+    .front_banner {
+        height: auto;
+        min-height: 35vh;
+        padding-top: 3vh;
+        
+        .banner_text {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+            
+            .sub_head span {
+                font-size: 1.2rem;
+            }
+            
+            header {
+                font-size: 2rem;
+                
+                .inputName {
+                    font-size: 2rem;
+                    width: 100%;
+                    max-width: 20rem;
+                }
+                
+                .tickDiv {
+                    height: 1.5rem;
+                    width: 1.5rem;
+                    margin-left: 0.8rem;
+                }
+                
+                .editDiv {
+                    height: 1.5rem;
+                    width: 1.5rem;
+                    margin-left: 0.8rem;
+                }
+            }
+            
+            .branch {
+                font-size: 1.5rem;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .front_banner {
+        .banner_text {
+            header {
+                font-size: 1.5rem;
+                
+                .inputName {
+                    font-size: 1.5rem;
+                    max-width: 15rem;
+                }
+                
+                .tickDiv {
+                    height: 1.2rem;
+                    width: 1.2rem;
+                    margin-left: 0.6rem;
+                }
+                
+                .editDiv {
+                    height: 1.2rem;
+                    width: 1.2rem;
+                    margin-left: 0.6rem;
+                }
+            }
+            
+            .branch {
+                font-size: 1.2rem;
+            }
+        }
+    }
 }
