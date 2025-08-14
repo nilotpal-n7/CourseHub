@@ -50,7 +50,8 @@ const App = () => {
         }
     }, [isLoggedIn, initial]);
 
-    return window.screen.width >= 640 ? (
+    // return window.screen.width >= 640 ? (
+    return(
         <div className="App">
             <ToastContainer
                 position="top-right"
@@ -78,8 +79,8 @@ const App = () => {
                 </Routes>
             </Router>
         </div>
-    ) : (
-        <MobilePage></MobilePage> //for mobile view
+    // ) : (
+    //     <MobilePage></MobilePage> //for mobile view
     );
 };
 

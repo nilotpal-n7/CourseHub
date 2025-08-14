@@ -1,10 +1,11 @@
 .wrap{
     width: 560px;
     max-width: 600px;
+
     // display: flex;
     // flex-direction: column;
     &.passive{
-        margin: 0px;
+        margin-left: 64px;
         .search{
             margin: 0;
             width: 100%;
@@ -13,7 +14,7 @@
         .search-results{
             margin-left: 0;
             margin-top: 44px;
-            width: 290px;
+            width: 300px;
         }
     }
     .search{
@@ -48,12 +49,15 @@
     .search-results{
         position: absolute;
         width: 518px;
-        height: 100%;
+        height: auto;
+        min-height: 100px;
+        max-height: 400px;
         background-color: #fff;
         z-index: 2;
         margin-left: 21px;
         color: #222;
         padding: 10px 20px;
+        overflow-y: hidden;
         .code{
             margin-right: 1rem;
             font-family: 'Bold';
@@ -72,10 +76,17 @@
         
     }
     @media screen and (max-width: 1140px) {
-        width: 350px;
+        max-width: 350px;
+        width: 85%;
         // display: none;
         .search-results{
-            width: 308px;
+            max-width: 350px;
+            width: 70%;
+        }
+    }
+    @media screen and (max-width: 768px) {
+        &.passive {
+            margin-left: 20px;
         }
     }
 }
