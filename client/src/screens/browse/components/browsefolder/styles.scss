@@ -52,6 +52,8 @@
                 font-size: 1.2rem;
                 padding: 0 15px;
                 height: 100%;
+                resize: none;
+                overflow: auto;
             }
             .name {
                 font-family: "Bold";
