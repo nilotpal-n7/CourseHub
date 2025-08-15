@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { getCourse } from "../../../../api/Course";
 import { useDispatch } from "react-redux";
 import { ChangeFolder } from "../../../../actions/filebrowser_actions";
-import { deleteFolder } from "../../../../api/Folder";
+import { deleteFolder, renameFolder } from "../../../../api/Folder";
 import { toast } from "react-toastify";
 import { RefreshCurrentFolder, UpdateCourses, ChangeCurrentYearData } from "../../../../actions/filebrowser_actions";
 import { ConfirmDialog } from "./confirmDialog";
@@ -22,6 +22,21 @@ const BrowseFolder = ({ type = "file", color, path, name, subject, folderData, p
 
     const [isEditing, setIsEditing] = useState(false);
     const renameRef = useRef();
+
+    const setFolderName = async (newName) => {
+        try{
+            await renameFolder(folderData._id, newName);
+            toast.success("Folder renamed successfully!");
+            const { data } = await getCourse(folderData?.course);
+            dispatch(RefreshCurrentFolder());
+            dispatch(UpdateCourses(data));
+            dispatch(ChangeCurrentYearData(currYear, data.children[currYear].children));
+        }
+        catch(err){
+            console.log(err);
+            toast.error("Failed to rename folder");
+        }
+    }
 
     const onClick = (folderData) => {
         // return;
@@ -148,7 +163,7 @@ const BrowseFolder = ({ type = "file", color, path, name, subject, folderData, p
                                 initialName={name}
                                 onCancel={() => setIsEditing(false)}
                                 onSave={(newName) => { 
-                                    console.log(newName);
+                                    setFolderName(newName);
                                     setIsEditing(false); 
                                 }}
                             />
