@@ -125,7 +125,7 @@ const YearInfo = ({
                     {course &&
                         course.map((year, idx) => {
                             return (
-                                <div>
+                                <div key={year?._id}>
                                     <span
                                         className={`year ${currYear === idx ? "selected" : ""}`}
                                         onClick={() => {
@@ -135,7 +135,6 @@ const YearInfo = ({
                                             dispatch(ChangeFolder(course[idx]));
                                             dispatch(RefreshCurrentFolder());
                                         }}
-                                        key={idx}
                                     >
                                         {year.name}
                                         {isBR ? (
