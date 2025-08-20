@@ -49,7 +49,35 @@
     .exam-card-container {
         justify-content: flex-start;
     }
+}
 
+// Mobile overflow fix - only affects mobile screens
+@media screen and (max-width: 768px) {
+    .App {
+        overflow-x: hidden;
+    }
+    
+    .split {
+        gap: 20px;
+    }
+    
+    .exam-card-container,
+    .coursecard-container,
+    .fav-container {
+        gap: 15px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .split {
+        gap: 15px;
+    }
+    
+    .exam-card-container,
+    .coursecard-container,
+    .fav-container {
+        gap: 10px;
+    }
 }
 
 .favorites-coming-soon{
@@ -58,4 +86,21 @@
     font-weight: 530;
     font-size: 1.5rem;
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+// Mobile favourites improvements
+@media screen and (max-width: 768px) {
+    .fav-container {
+        justify-content: center;
+    }
+    
+    .favorites-coming-soon {
+        font-size: 1.3rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .favorites-coming-soon {
+        font-size: 1.1rem;
+    }
 }

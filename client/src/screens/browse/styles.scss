@@ -112,3 +112,135 @@
         }
     }
 }
+
+// Mobile responsive styles - only affects mobile screens
+@media screen and (max-width: 768px) {
+    .controller {
+        flex-direction: column;
+        height: auto;
+        min-height: 90vh;
+        margin-top: 0;
+        
+        .left {
+            flex: none;
+            max-width: 100%;
+            border-right: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.33);
+            max-height: 40vh;
+            overflow-y: auto;
+            
+            .heading {
+                padding: 8px 15px;
+                font-size: 1.1rem;
+            }
+        }
+        
+        .middle {
+            flex: none;
+            border-right: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.33);
+            min-height: 40vh;
+            
+            .files {
+                padding: 15px 15px;
+                gap: 10px;
+            }
+            
+            .empty-message {
+                font-size: 1.1rem;
+                padding: 20px;
+                text-align: center;
+            }
+        }
+        
+        .right {
+            flex: none;
+            max-width: 100%;
+            min-height: 20vh;
+            
+            .year-content {
+                .year-title {
+                    padding: 8px 15px;
+                    font-size: 1.1rem;
+                }
+                
+                .year {
+                    padding: 8px 15px;
+                    font-size: 1rem;
+                }
+                
+                &.add-year {
+                    padding: 8px 15px;
+                    
+                    span {
+                        font-size: 0.8rem;
+                    }
+                }
+            }
+        }
+    }
+    
+    .navbar-browse-screen {
+        height: 10vh;
+        margin-bottom: 0;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .controller {
+        min-height: 88vh;
+        margin-top: 0;
+        
+        .left {
+            max-height: 35vh;
+            
+            .heading {
+                padding: 6px 12px;
+                font-size: 1rem;
+            }
+        }
+        
+        .middle {
+            min-height: 35vh;
+            
+            .files {
+                padding: 12px 12px;
+                gap: 8px;
+            }
+            
+            .empty-message {
+                font-size: 1rem;
+                padding: 15px;
+            }
+        }
+        
+        .right {
+            min-height: 18vh;
+            
+            .year-content {
+                .year-title {
+                    padding: 6px 12px;
+                    font-size: 1rem;
+                }
+                
+                .year {
+                    padding: 6px 12px;
+                    font-size: 0.9rem;
+                }
+                
+                &.add-year {
+                    padding: 6px 12px;
+                    
+                    span {
+                        font-size: 0.75rem;
+                    }
+                }
+            }
+        }
+    }
+    
+    .navbar-browse-screen {
+        height: 12vh;
+        margin-bottom: 0;
+    }
+}

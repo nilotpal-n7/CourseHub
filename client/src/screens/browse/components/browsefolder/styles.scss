@@ -98,4 +98,72 @@
             }
         }
     }
+    
+    @media screen and (max-width: 768px) {
+        width: 150px;
+        height: 130px;
+        margin: 8px;
+        
+        .content {
+            .top {
+                .delete {
+                    width: 16px;
+                    height: 16px;
+                    top: 3px;
+                    right: 3px;
+                }
+                
+                .path {
+                    padding: 20px 35px 0px 10px;
+                    font-size: 0.8rem;
+                }
+                
+                .name {
+                    font-size: 1rem;
+                    padding: 0px 35px 0px 10px;
+                }
+            }
+            
+            .bottom {
+                .subject {
+                    font-size: 1rem;
+                    padding: 0px 10px 15px 0px;
+                }
+            }
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        width: 120px;
+        height: 100px;
+        margin: 6px;
+        
+        .content {
+            .top {
+                .delete {
+                    width: 14px;
+                    height: 14px;
+                    top: 2px;
+                    right: 2px;
+                }
+                
+                .path {
+                    padding: 15px 25px 0px 8px;
+                    font-size: 0.7rem;
+                }
+                
+                .name {
+                    font-size: 0.9rem;
+                    padding: 0px 25px 0px 8px;
+                }
+            }
+            
+            .bottom {
+                .subject {
+                    font-size: 0.9rem;
+                    padding: 0px 8px 10px 0px;
+                }
+            }
+        }
+    }
 }

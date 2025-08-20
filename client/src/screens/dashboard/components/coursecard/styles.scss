@@ -100,4 +100,27 @@
             display: unset;
         }
     }
+
+    @media screen and (max-width: 768px) {
+        width: 120px;
+        height: 130px;
+        
+        .code {
+            font-size: 0.7rem;
+            padding: 2px 5px;
+        }
+        
+        .unavailable {
+            font-size: 0.55rem;
+            padding: 1px 3px;
+        }
+        
+        .name p {
+            font-size: 0.9rem;
+        }
+        
+        &.ADD .content p {
+            font-size: 0.9rem;
+        }
+    }
 }

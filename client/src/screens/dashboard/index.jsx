@@ -275,7 +275,7 @@ const Dashboard = () => {
                 <ContributionBanner contributionHandler={contributionHandler} />
                 <Space amount={50} />
                 <Container>
-                    <SubHeading text={"MY FAVOURITES"} type={"bold"} />
+                    <SubHeading text={"MY FAVOURITES"} type={"bold"} algn={"center"} />
                     <div className="fav-container">
                         {user?.favourites?.length > 0 ? (
                             user.favourites.map((favourite) => (
