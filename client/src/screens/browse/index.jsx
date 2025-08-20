@@ -36,6 +36,14 @@ const BrowseScreen = () => {
     const currYear = useSelector((state) => state.fileBrowser.currentYear);
     const allCourseData = useSelector((state) => state.fileBrowser.allCourseData);
 
+    const sortFile = (a, b) => {
+        if (a?.name > b?.name) return 1;
+        else if(a?.name < b?.name) return -1;
+        else return 1;
+    }
+
+    if(folderData?.childType == "File" && folderData?.children?.length > 1) folderData?.children.sort(sortFile);
+
     const contributionHandler = (event) => {
         const collection = document.getElementsByClassName("contri");
         const contributionSection = collection[0];

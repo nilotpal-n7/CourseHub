@@ -30,6 +30,14 @@ const YearInfo = ({
     const isReadOnlyCourse = user?.readOnly?.some(
         (c) => c.code.toLowerCase() === courseCode?.toLowerCase()
     );
+    
+    const sortYear = (a, b) => {
+        if (a?.name > b?.name) return 1;
+        else if(a?.name < b?.name) return -1;
+        else return 1;
+    }
+
+    if(course?.length > 1) course.sort(sortYear);
 
     const handleAddYear = () => {
         setNewYearName("");
@@ -117,7 +125,7 @@ const YearInfo = ({
                     {course &&
                         course.map((year, idx) => {
                             return (
-                                <div>
+                                <div key={year?._id}>
                                     <span
                                         className={`year ${currYear === idx ? "selected" : ""}`}
                                         onClick={() => {
@@ -127,7 +135,6 @@ const YearInfo = ({
                                             dispatch(ChangeFolder(course[idx]));
                                             dispatch(RefreshCurrentFolder());
                                         }}
-                                        key={idx}
                                     >
                                         {year.name}
                                         {isBR ? (

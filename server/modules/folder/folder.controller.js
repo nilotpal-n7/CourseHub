@@ -41,19 +41,19 @@ async function deleteFolder(req, res) {
     }
 }
 
-async function recursiveDelete(folder){
-    if(!folder.children) {
+async function recursiveDelete(folder) {
+    if (!folder.children) {
         await FolderModel.findByIdAndDelete(folder._id);
         return;
     }
-    if (folder.childType === "Folder"){
-        for(const subfolder of folder.children){
+    if (folder.childType === "Folder") {
+        for (const subfolder of folder.children) {
             await recursiveDelete(subfolder);
         }
         await FolderModel.findByIdAndDelete(folder._id);
     }
-    else if(folder.childType === "File"){
-        for(const file of folder.children){
+    else if (folder.childType === "File") {
+        for (const file of folder.children) {
             console.log(file);
             await deleteFile(file);
         }
@@ -62,7 +62,7 @@ async function recursiveDelete(folder){
 }
 
 async function getFolderContent(req, res) {
-    const {folderId} = req.params;
+    const { folderId } = req.params;
     try {
         const folder = await FolderModel.findById(folderId).populate('children');
         if (!folder) {
@@ -74,4 +74,18 @@ async function getFolderContent(req, res) {
     }
 }
 
-export { createFolder, deleteFolder,getFolderContent };
+async function renameFolder(req, res) {
+    const { folderId, newName } = req.body.data;
+    try {
+        const folder = await FolderModel.findByIdAndUpdate(folderId, { $set: { name: newName } }, { new: true })
+        if (!folder) {
+            return res.status(404).json({ message: "Folder not found" });
+        }
+        return res.json(folder);
+    }
+    catch(err){
+        return res.status(500).json({ error: err.message });
+    }
+}
+
+export { createFolder, deleteFolder, getFolderContent, renameFolder };
