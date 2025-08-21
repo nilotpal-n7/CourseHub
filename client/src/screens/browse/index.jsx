@@ -144,12 +144,12 @@ const BrowseScreen = () => {
                 // console.log("found in sessionStorage");
                 fetchedData = present || currCourse;
                 // console.log("Course found in cache:", {
-                    fetchedData,
-                    hasChildren: !!fetchedData?.children,
-                    isArray: Array.isArray(fetchedData?.children),
-                    childrenLength: fetchedData?.children?.length,
-                    isMobile,
-                });
+                //     fetchedData,
+                //     hasChildren: !!fetchedData?.children,
+                //     isArray: Array.isArray(fetchedData?.children),
+                //     childrenLength: fetchedData?.children?.length,
+                //     isMobile,
+                // });
                 // console.log(fetchedData);
                 dispatch(AddNewCourseLocal(fetchedData));
                 dispatch(ChangeCurrentCourse(fetchedData?.children || fetchedData, code));
@@ -163,17 +163,17 @@ const BrowseScreen = () => {
                     const defaultYearIndex = fetchedData.children.length - 1;
                     const defaultYear = fetchedData.children[defaultYearIndex];
                     // console.log("Checking default year:", {
-                        defaultYear,
-                        hasChildren: !!defaultYear?.children,
-                        childrenLength: defaultYear?.children?.length,
-                    });
+                    //     defaultYear,
+                    //     hasChildren: !!defaultYear?.children,
+                    //     childrenLength: defaultYear?.children?.length,
+                    // });
                     if (defaultYear && defaultYear.children) {
                         // console.log(
-                            "Auto-selecting year after course load:",
-                            defaultYear.name,
-                            "isMobile:",
-                            isMobile
-                        );
+                        //     "Auto-selecting year after course load:",
+                        //     defaultYear.name,
+                        //     "isMobile:",
+                        //     isMobile
+                        // );
                         dispatch(
                             ChangeCurrentYearData(defaultYearIndex, defaultYear.children || [])
                         );
@@ -209,11 +209,11 @@ const BrowseScreen = () => {
                         const defaultYear = fetchedData.children[defaultYearIndex];
                         if (defaultYear && defaultYear.children) {
                             // console.log(
-                                "Auto-selecting year after API load:",
-                                defaultYear.name,
-                                "isMobile:",
-                                isMobile
-                            );
+                            //     "Auto-selecting year after API load:",
+                            //     defaultYear.name,
+                            //     "isMobile:",
+                            //     isMobile
+                            // );
                             dispatch(
                                 ChangeCurrentYearData(defaultYearIndex, defaultYear.children || [])
                             );
