@@ -123,7 +123,7 @@ const Dashboard = () => {
                 <Container color={"dark"}>
                     <Space amount={20} />
                     <div className="split">
-                        <div>
+                        <div className="welcome-container">
                             <Heading text={"Welcome,"} type={""} color={"light"} />
                             <Heading
                                 text={formatName(user?.user?.name)}

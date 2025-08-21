@@ -91,11 +91,11 @@
 
     // Mobile Menu Overlay
     .mobile-menu {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: auto;
+        height: auto;
         background-color: transparent;
         z-index: 1000;
         opacity: 0;
@@ -110,31 +110,33 @@
         }
 
         .mobile-menu-content {
-            position: absolute;
-            top: 80px;
-            right: 20px;
-            background-color: #000;
-            border: 2px solid #333;
-            border-radius: 0;
-            padding: 0;
-            min-width: 220px;
+            position: relative;
+            top: 0px;
+            right: 10px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 6px;
+            min-width: 120px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
 
             .nav-link {
                 margin: 0;
-                padding: 18px 20px;
-                border-bottom: 1px solid #333;
-                color: #fff;
+                padding: 10px 14px;
+                border-bottom: none;
+                color: #333;
                 font-family: "Regular";
-                font-size: 1rem;
-                transition: all 0.2s ease;
+                font-size: 0.9rem;
+                transition: all 0.15s ease;
                 cursor: pointer;
+                border-radius: 6px;
 
                 &:hover {
-                    background-color: #1a1a1a;
-                    color: #f0f0f0;
+                    background-color: #fecf6f;
+                    color: #2c3e50;
                 }
 
                 &:last-child {

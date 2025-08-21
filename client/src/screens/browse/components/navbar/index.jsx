@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./styles.scss";
 import Logo from "./components/logo";
 import NavLink from "../../../../components/navbar/components/navlink";
@@ -10,19 +10,61 @@ import server from "../../../../api/server";
 
 const NavBarBrowseScreen = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const mobileMenuRef = useRef(null);
+    const toggleButtonRef = useRef(null);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    
+
     const handleLogout = () => {
         dispatch(LogoutUser());
         window.location = `${server}/api/auth/logout`;
     };
 
-    const toggleMobileMenu = () => {
+    const toggleMobileMenu = (e) => {
+        e.stopPropagation();
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
-    
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
+    // Handle click outside to close menu
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                mobileMenuRef.current &&
+                !mobileMenuRef.current.contains(event.target) &&
+                toggleButtonRef.current &&
+                !toggleButtonRef.current.contains(event.target)
+            ) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        const handleEscapeKey = (event) => {
+            if (event.key === "Escape") {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        if (isMobileMenuOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+            document.addEventListener("keydown", handleEscapeKey);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("keydown", handleEscapeKey);
+        };
+    }, [isMobileMenuOpen]);
+
+    const handleNavLinkClick = (action) => {
+        action();
+        closeMobileMenu();
+    };
+
     return (
         <nav className="nav-browse">
             <div className="nav-content">
@@ -35,21 +77,39 @@ const NavBarBrowseScreen = () => {
                     <NavLink text={"Profile"} onClick={() => navigate("/profile")} />
                     <NavLink text={"Log Out"} onClick={handleLogout} />
                 </div>
-                <div className="mobile-menu-toggle" onClick={toggleMobileMenu}>
-                    <div className={`three-dots ${isMobileMenuOpen ? 'cross' : ''}`}>
+                <div
+                    className="mobile-menu-toggle"
+                    onClick={toggleMobileMenu}
+                    ref={toggleButtonRef}
+                    aria-label="Toggle mobile menu"
+                    aria-expanded={isMobileMenuOpen}
+                >
+                    <div className={`three-dots ${isMobileMenuOpen ? "cross" : ""}`}>
                         <span></span>
                         <span></span>
                         <span></span>
                     </div>
-                </div>
-            </div>
-            
-            {/* Mobile Menu Overlay */}
-            <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
-                <div className="mobile-menu-content">
-                    <NavLink text={"Dashboard"} onClick={() => { navigate("/dashboard"); setIsMobileMenuOpen(false); }} />
-                    <NavLink text={"Profile"} onClick={() => { navigate("/profile"); setIsMobileMenuOpen(false); }} />
-                    <NavLink text={"Log Out"} onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} />
+
+                    {/* Mobile Menu - positioned relative to button */}
+                    <div
+                        className={`mobile-menu ${isMobileMenuOpen ? "open" : ""}`}
+                        ref={mobileMenuRef}
+                    >
+                        <div className="mobile-menu-content">
+                            <NavLink
+                                text={"Dashboard"}
+                                onClick={() => handleNavLinkClick(() => navigate("/dashboard"))}
+                            />
+                            <NavLink
+                                text={"Profile"}
+                                onClick={() => handleNavLinkClick(() => navigate("/profile"))}
+                            />
+                            <NavLink
+                                text={"Log Out"}
+                                onClick={() => handleNavLinkClick(handleLogout)}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>

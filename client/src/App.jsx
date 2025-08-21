@@ -19,6 +19,18 @@ const App = () => {
     const isLoggedIn = useSelector((state) => state.user.loggedIn);
     const dispatch = useDispatch();
 
+    // Detect if device is mobile
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         if (params.get("fresh")) {
@@ -53,13 +65,24 @@ const App = () => {
     return (
         <div className="App">
             <ToastContainer
-                position="top-right"
+                position={isMobile ? "bottom-center" : "top-right"}
                 autoClose={1500}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
                 rtl={false}
                 theme="light"
+                className="toast-container"
+                style={
+                    isMobile
+                        ? {
+                              bottom: "20px",
+                              left: "16px",
+                              right: "16px",
+                              width: "auto",
+                          }
+                        : {}
+                }
             />
             <Router>
                 <Routes>

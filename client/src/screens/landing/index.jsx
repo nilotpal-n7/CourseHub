@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { getUser, handleLogin } from "../../api/User";
 import AddCourseModal from "./components/searchcoursemodal";
+import Loader from "../../components/Loader";
 const LandingPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -44,7 +45,17 @@ const LandingPage = () => {
     }, []);
 
     return loading ? (
-        "loading..."
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "100vh",
+                backgroundColor: "#f5f5f5",
+            }}
+        >
+            <Loader text="Loading..." />
+        </div>
     ) : (
         <>
             <section className="landing">

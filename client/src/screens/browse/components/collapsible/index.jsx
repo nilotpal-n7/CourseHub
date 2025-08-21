@@ -8,6 +8,7 @@ import { ChangeFolder, ChangeCurrentCourse } from "../../../../actions/filebrows
 import { getCourse } from "../../../../api/Course";
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import SmallLoader from "../../../../components/SmallLoader";
 import searchFolderById from "../../../../utils/searchFolderById";
 import { toast } from "react-toastify";
 import { capitalise } from "../../../../utils/capitalise";
@@ -184,7 +185,7 @@ const Collapsible = ({ course, color, state }) => {
                 </div>
             </div>
             <div className="collapsible-content">
-                {loading && "loading..."}
+                {loading && <SmallLoader text="Loading course..." />}
                 {error && "error"}
                 {notFound && "course not added yet"}
                 {!loading &&
