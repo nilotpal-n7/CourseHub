@@ -33,6 +33,7 @@ const UserReducer = (
         case "UPDATE_FAVOURITES":
             return { ...state, favourites: action.payload.favourites };
         case "ADD_COURSE_LOCAL":
+            // Check if course is already in user's regular courses
             if (
                 state.user?.courses?.find(
                     (course) =>
@@ -40,6 +41,26 @@ const UserReducer = (
                 )
             )
                 return state;
+
+            // Check if course is already in user's previous courses
+            if (
+                state.user?.previousCourses?.find(
+                    (course) =>
+                        course.code.toLowerCase() === action.payload.course.code.toLowerCase()
+                )
+            )
+                return state;
+
+            // Check if course is already in user's read-only courses
+            if (
+                state.user?.readOnly?.find(
+                    (course) =>
+                        course.code.toLowerCase() === action.payload.course.code.toLowerCase()
+                )
+            )
+                return state;
+
+            // Check if course is already in local courses
             if (state.localCourses?.find((course) => course.code === action.payload.course.code))
                 return state;
             try {

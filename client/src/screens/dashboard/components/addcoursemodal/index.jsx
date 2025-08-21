@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { GetSearchResult } from "../../../../api/Search";
 import Result from "./components/result";
+import SmallLoader from "../../../../components/SmallLoader";
 const AddCourseModal = ({ handleAddCourse }) => {
     const [code, setCode] = useState("");
     const [btnState, setBtnState] = useState("disabled");
@@ -73,7 +74,9 @@ const AddCourseModal = ({ handleAddCourse }) => {
             <Wrapper>
                 <div className="head">Add New Course</div>
                 <div className="info-message">This course will be read only</div>
-                <div className="info-message.secondary">No space between course code, for e.g- CS101</div>
+                <div className="info-message.secondary">
+                    No space between course code, for e.g- CS101
+                </div>
                 <form onSubmit={(e) => e.preventDefault()}>
                     <div className="course">
                         <label htmlFor="course" className="label_course">
@@ -91,31 +94,35 @@ const AddCourseModal = ({ handleAddCourse }) => {
                         ></input>
                     </div>
                 </form>
-                {err === null
-                    ? loading
-                        ? "Loading courses..."
-                        : (() => {
-                              const filtered = results.filter(
-                                  (course) =>
-                                      !allUserCourseCodes.includes(
-                                          course.code?.replace(/\s+/g, "").toLowerCase()
-                                      )
-                              );
-                              if (results.length > 0 && filtered.length === 0) {
-                                  return "Course already exists";
-                              }
-                              return filtered.map((course) => (
-                                  <Result
-                                      key={course._id}
-                                      _id={course._id}
-                                      code={course.code}
-                                      name={course.name}
-                                      handleClick={handleAddCourse}
-                                      handleModalClose={handleModalClose}
-                                  />
-                              ));
-                          })()
-                    : err}
+                {err === null ? (
+                    loading ? (
+                        <SmallLoader text="Loading courses..." />
+                    ) : (
+                        (() => {
+                            const filtered = results.filter(
+                                (course) =>
+                                    !allUserCourseCodes.includes(
+                                        course.code?.replace(/\s+/g, "").toLowerCase()
+                                    )
+                            );
+                            if (results.length > 0 && filtered.length === 0) {
+                                return "Course already exists";
+                            }
+                            return filtered.map((course) => (
+                                <Result
+                                    key={course._id}
+                                    _id={course._id}
+                                    code={course.code}
+                                    name={course.name}
+                                    handleClick={handleAddCourse}
+                                    handleModalClose={handleModalClose}
+                                />
+                            ));
+                        })()
+                    )
+                ) : (
+                    err
+                )}
                 <Space amount={35} />
 
                 <div className={`button ${btnState}`} onClick={handleSearch}>

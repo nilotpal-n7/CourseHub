@@ -1,8 +1,10 @@
-nav{
+nav {
     background-color: #000;
     margin-bottom: -2px;
-    .active{
-        .nav-content{
+    position: relative;
+
+    .active {
+        .nav-content {
             // max-width: 1400px;
             margin: auto;
             padding: 20px 64px 20px 64px;
@@ -10,33 +12,180 @@ nav{
             color: #fff;
             align-items: center;
             justify-content: space-between;
-            .navlinks{
+            .navlinks {
                 display: flex;
+
+                &.desktop-nav {
+                    @media screen and (max-width: 768px) {
+                        display: none;
+                    }
+                }
+            }
+
+            .mobile-menu-toggle {
+                display: none;
+                cursor: pointer;
+                padding: 8px;
+                position: relative;
+                z-index: 1001;
+
+                @media screen and (max-width: 768px) {
+                    display: block;
+                }
+
+                .three-dots {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 3px;
+                    transition: all 0.3s ease;
+                    position: relative;
+                    width: 20px;
+                    height: 20px;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+
+                    span {
+                        width: 4px;
+                        height: 4px;
+                        background-color: #fff;
+                        border-radius: 50%;
+                        transition: all 0.3s ease;
+                        position: relative;
+                        pointer-events: none;
+                    }
+
+                    &.cross {
+                        span {
+                            &:first-child {
+                                transform: rotate(45deg);
+                                width: 16px;
+                                height: 2px;
+                                border-radius: 1px;
+                                position: absolute;
+                                top: 9px;
+                                left: 2px;
+                                pointer-events: none;
+                            }
+
+                            &:nth-child(2) {
+                                opacity: 0;
+                                transform: scale(0);
+                                pointer-events: none;
+                            }
+
+                            &:last-child {
+                                transform: rotate(-45deg);
+                                width: 16px;
+                                height: 2px;
+                                border-radius: 1px;
+                                position: absolute;
+                                top: 9px;
+                                left: 2px;
+                                pointer-events: none;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
-    .passive{
+    .passive {
         display: none;
     }
+
+    // Mobile Menu Overlay - Fixed positioning relative to toggle button
+    .mobile-menu {
+        position: absolute;
+        top: 100%;
+        right: 64px; // Align with nav padding to position relative to toggle button
+        width: auto;
+        height: auto;
+        background-color: transparent;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        pointer-events: none;
+
+        // Only show on mobile and when open
+        @media screen and (max-width: 768px) {
+            right: 20px; // Adjust for mobile padding
+            &.open {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+        }
+
+        // Hide completely on desktop
+        @media screen and (min-width: 769px) {
+            display: none !important;
+        }
+
+        .mobile-menu-content {
+            position: relative;
+            top: 8px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 4px;
+            min-width: 110px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+            z-index: 9999;
+
+            .nav-link {
+                margin: 0;
+                padding: 8px 12px;
+                border-bottom: none;
+                color: #333;
+                font-family: "Regular";
+                font-size: 0.85rem;
+                transition: all 0.15s ease;
+                cursor: pointer;
+                border-radius: 5px;
+                text-decoration: none;
+                white-space: nowrap; // Prevent text wrapping
+
+                &:hover {
+                    background-color: #fecf6f;
+                    color: #2c3e50;
+                }
+
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+        }
+    }
+
     @media screen and (max-width: 980px) {
-        .passive{
+        .passive {
             display: block;
             max-width: 1400px;
             margin: auto;
-            padding-left: 30px;
-            padding-right: 30px;
+            // padding-left: 30px;
+            // padding-right: 30px;
             display: flex;
             justify-content: flex-start;
         }
-        .active{
-            .nav-content{
-                .wrap{
+        .active {
+            .nav-content {
+                .wrap {
                     display: none;
-                    &.passive{
+                    &.passive {
                         display: block;
                     }
                 }
             }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .active .nav-content {
+            padding: 20px 20px 20px 20px;
         }
     }
 }

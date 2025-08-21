@@ -69,8 +69,8 @@ const Contributions = () => {
         } catch (error) {
             setSubmitEnabled(true);
             contributionSection.classList.remove("show");
-            toast.error("Failed to upload! Please try again.");
-            console.log(error);
+            toast.error("Upload failed. Please try again!");
+            // console.log(error);
         }
 
         //refresh the course in session storage to include the new file.
@@ -80,7 +80,7 @@ const Contributions = () => {
             const { data } = currCourse;
             if (!data.found) {
                 toast.dismiss(loadingCourseToastId);
-                toast.error("Course data not found!");
+                toast.error("Couldn't find course data!");
                 return;
             }
             dispatch(RefreshCurrentFolder());
@@ -88,7 +88,7 @@ const Contributions = () => {
             dispatch(ChangeCurrentYearData(currYear, data.children[currYear].children));
             toast.dismiss(loadingCourseToastId);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             return null;
         }
     }
@@ -96,9 +96,11 @@ const Contributions = () => {
     return (
         <SectionC>
             <Wrapper>
-                <div className="head">{isBR ? "📁 Add Files" : "📁 Contribute to CourseHub"}</div>
+                <div className="head">{isBR ? "Upload Files" : "Share Your Files"}</div>
                 <div className="disclaimer">
-                    Selected Files will get uploaded to the current folder
+                    {isBR
+                        ? "Upload files to this folder"
+                        : "Your files will be added to this folder"}
                 </div>
                 <div className="file_pond">
                     <FilePond
@@ -116,6 +118,8 @@ const Contributions = () => {
                             },
                         }}
                         instantUpload={false}
+                        allowProcess={false}
+                        allowRevert={false}
                         ref={(ref) => {
                             pond.current = ref;
                         }}
@@ -123,17 +127,15 @@ const Contributions = () => {
                 </div>
                 <div id="disclaimer-container">
                     <div id="uploaded-container">
-                        <div>🚫</div>
-                        <div>
-                            Do not close this popup until all files are successfully uploaded!
-                        </div>
+                        <div>Note:</div>
+                        <div>Do not close this window while files are being uploaded.</div>
                     </div>
                     {!isBR ? (
                         <div id="uploaded-container">
-                            <div>⚠️</div>
+                            <div>Note:</div>
                             <div>
-                                Please contact your Branch Representative to verify the files you
-                                have uploaded so that it may be visible to everyone
+                                Files require approval from a Branch Representative before becoming
+                                visible to other users.
                             </div>
                         </div>
                     ) : (

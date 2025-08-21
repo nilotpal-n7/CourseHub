@@ -12,6 +12,23 @@
         transform: translateY(-2px);
     }
 
+    // Mobile styles for 2 folders per row - dynamic squares with larger width
+    @media (max-width: 768px) {
+        width: calc(50% - 4px); // Reduced gap for larger folders
+        height: auto; // Let aspect-ratio control height
+        aspect-ratio: 1; // Perfect square: width = height
+        margin: 0; // Remove margin since we're using gap in parent
+        min-width: 0; // Allow shrinking
+        max-width: none; // Allow full expansion
+    }
+
+    // Very small screens - same dynamic approach
+    @media (max-width: 480px) {
+        width: calc(50% - 4px); // Same calculation
+        height: auto; // Let aspect-ratio control height
+        aspect-ratio: 1; // Perfect square: width = height
+    }
+
     svg {
         position: absolute;
         z-index: -1;
@@ -41,8 +58,19 @@
             .path {
                 padding: 30px 50px 0px 15px;
                 font-size: 0.9rem;
+
+                // Mobile adjustments
+                @media (max-width: 768px) {
+                    padding: 20px 35px 0px 12px;
+                    font-size: 0.8rem;
+                }
+
+                @media (max-width: 480px) {
+                    padding: 15px 25px 0px 10px;
+                    font-size: 0.75rem;
+                }
             }
-            .input-rename{
+            .input-rename {
                 border: none;
                 background-color: transparent;
                 outline: none;
@@ -63,7 +91,22 @@
                 min-width: 0;
                 line-height: 1.3;
                 display: inline-block;
-                .rename-tick{
+
+                // Mobile adjustments
+                @media (max-width: 768px) {
+                    font-size: 1rem;
+                    padding: 0px 12px;
+                    max-width: 120px;
+                    line-height: 1.2;
+                }
+
+                @media (max-width: 480px) {
+                    font-size: 0.9rem;
+                    padding: 0px 10px;
+                    max-width: 100px;
+                }
+
+                .rename-tick {
                     display: inline-block;
                     background: url(./edit.svg), none;
                     background-size: contain;
@@ -76,9 +119,18 @@
                     transform: translateY(-2px);
                     opacity: 0;
                     transition: opacity 0.2s ease-in-out;
+
+                    // Mobile adjustments
+                    @media (max-width: 768px) {
+                        height: 16px;
+                        width: 16px;
+                        margin-left: 3px;
+                    }
                 }
             }
-            .name:hover .rename-tick {opacity: 1;}
+            .name:hover .rename-tick {
+                opacity: 1;
+            }
         }
         .top:hover .delete {
             opacity: 1;
@@ -95,6 +147,76 @@
                 font-family: "Bold";
                 font-size: 1.2rem;
                 color: rgba(80, 80, 80, 0.5);
+            }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        width: calc(30% - 8px);
+        height: auto;
+        aspect-ratio: 1;
+        margin: 8px;
+
+        .content {
+            .top {
+                .delete {
+                    width: 16px;
+                    height: 16px;
+                    top: 3px;
+                    right: 3px;
+                }
+
+                .path {
+                    padding: 20px 35px 0px 10px;
+                    font-size: 0.8rem;
+                }
+
+                .name {
+                    font-size: 1rem;
+                    padding: 0px 35px 0px 10px;
+                }
+            }
+
+            .bottom {
+                .subject {
+                    font-size: 1rem;
+                    padding: 0px 10px 15px 0px;
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        width: calc(47% - 8px);
+        height: auto;
+        aspect-ratio: 1;
+        margin: 6px;
+
+        .content {
+            .top {
+                .delete {
+                    width: 14px;
+                    height: 14px;
+                    top: 2px;
+                    right: 2px;
+                }
+
+                .path {
+                    padding: 15px 25px 0px 8px;
+                    font-size: 0.7rem;
+                }
+
+                .name {
+                    font-size: 0.9rem;
+                    padding: 0px 25px 0px 8px;
+                }
+            }
+
+            .bottom {
+                .subject {
+                    font-size: 0.9rem;
+                    padding: 0px 8px 10px 0px;
+                }
             }
         }
     }

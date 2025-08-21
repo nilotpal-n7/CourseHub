@@ -5,6 +5,7 @@ import { GetSearchResult } from "../../../../api/Search";
 import formatLongText from "../../../../utils/formatLongText";
 import { useEffect } from "react";
 import { capitalise } from "../../../../utils/capitalise";
+import SmallLoader from "../../../../components/SmallLoader";
 const SearchBar = ({ type, handleSetCourse }) => {
     const [open, setOpen] = useState(false);
     const [searched, setSearched] = useState(false);
@@ -50,7 +51,7 @@ const SearchBar = ({ type, handleSetCourse }) => {
             setLoading(false);
             setError(true);
             setSelected(null);
-            console.log(error);
+            // console.log(error);
         }
     };
     return (
@@ -95,7 +96,7 @@ const SearchBar = ({ type, handleSetCourse }) => {
                     <div className={`csearch-results`} style={searchResultStyle}>
                         {searched ? (
                             loading ? (
-                                "loading"
+                                <SmallLoader text="Searching..." />
                             ) : fetched?.found ? (
                                 <>
                                     {fetched.results.map((result) => {

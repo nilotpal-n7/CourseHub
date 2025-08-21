@@ -21,7 +21,7 @@ const LoadingPage = () => {
                     return navigate("/login");
                 }
 
-                console.log("here in loading");
+                // console.log("here in loading");
                 const { courses, previousCourses } = await fetchUserCoursesData(user);
 
                 user.courses = courses;
