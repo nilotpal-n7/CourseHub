@@ -31,14 +31,6 @@ const YearInfo = ({
         (c) => c.code.toLowerCase() === courseCode?.toLowerCase()
     );
     
-    const sortYear = (a, b) => {
-        if (a?.name > b?.name) return 1;
-        else if(a?.name < b?.name) return -1;
-        else return 1;
-    }
-
-    if(course?.length > 1) course.sort(sortYear);
-
     const handleAddYear = () => {
         setNewYearName("");
         setShowConfirm(true);
