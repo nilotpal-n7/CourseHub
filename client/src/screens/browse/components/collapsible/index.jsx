@@ -139,7 +139,7 @@ const Collapsible = ({ course, color, state }) => {
             setOpen(false);
         }
         if (currCourseCode?.toLowerCase() === courseCode?.toLowerCase()) {
-            //console.log("called");
+            //// console.log("called");
             triggerGetCourse();
             setOpen(true);
         }
@@ -165,7 +165,7 @@ const Collapsible = ({ course, color, state }) => {
                     dispatch(ChangeFolder(searchedFolder));
                 }
             } catch (error) {
-                console.log(error);
+                // console.log(error);
             }
         }
     }, [initial, currentCourse]);

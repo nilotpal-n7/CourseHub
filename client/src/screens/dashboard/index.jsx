@@ -58,7 +58,7 @@ const Dashboard = () => {
             await AddNewCourseAPI(code, name);
             location.reload();
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
         // dispatch(
         //     AddNewCourseLocal({
@@ -78,7 +78,7 @@ const Dashboard = () => {
                 dispatch(LoadCourses(JSON.parse(sessionStorage.getItem("AllCourses"))));
             } catch (error) {
                 dispatch(LoadCourses([]));
-                console.log("load error");
+                // console.log("load error");
             }
         }
     }, []);
@@ -97,7 +97,7 @@ const Dashboard = () => {
                 const daysEndSem = parseInt((endSemDate.getTime() - now) / (1000 * 3600 * 24));
                 setEndSem(daysEndSem);
             } catch (error) {
-                console.log(error);
+                // console.log(error);
             }
         }
         run();

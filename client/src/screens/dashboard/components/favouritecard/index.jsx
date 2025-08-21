@@ -12,7 +12,6 @@ const FavouriteCard = ({ type = "file", color, path, name, subject, code, id, _i
     const dispatch = useDispatch();
 
     const handlePreview = async () => {
-      
         const response = await toast.promise(previewFile(id), {
             pending: "Generating preview link...",
             success: "Success!.",

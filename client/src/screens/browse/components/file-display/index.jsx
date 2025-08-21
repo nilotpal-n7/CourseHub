@@ -133,7 +133,7 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
         setDialogType("verify");
         setOnConfirmAction(() => async () => {
             try {
-                console.log("Verifying file:", file._id);
+                // console.log("Verifying file:", file._id);
                 await verifyFile(file._id);
                 toast.success("File verified!");
                 dispatch(UpdateFileVerificationStatus(file._id, true));
@@ -159,7 +159,7 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
         setDialogType("delete");
         setOnConfirmAction(() => async () => {
             try {
-                //console.log("Deleting file:", file._id);
+                //// console.log("Deleting file:", file._id);
                 await unverifyFile(file._id, file.fileId, currFolderId);
                 toast.success("File deleted!");
                 // window.location.reload();

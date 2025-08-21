@@ -100,7 +100,7 @@ const FolderInfo = ({
             dispatch(RefreshCurrentFolder());
             toast.success(`Folder "${folderName}" created`);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             toast.error("Failed to create folder.");
         }
         setShowConfirm(false);

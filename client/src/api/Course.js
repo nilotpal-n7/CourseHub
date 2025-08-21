@@ -16,7 +16,7 @@ export const getUserCourses = async (courses) => {
         });
         return resp.data;
     } catch (err) {
-        console.log("Error:", err.message);
+        // console.log("Error:", err.message);
     }
 };
 

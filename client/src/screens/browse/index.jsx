@@ -97,7 +97,7 @@ const BrowseScreen = () => {
                 setLoading(false);
             } catch (error) {
                 dispatch(LogoutUser());
-                console.log("in index.js error loading");
+                // console.log("in index.js error loading");
                 setLoading(false);
                 navigate("/login");
             }
@@ -112,9 +112,9 @@ const BrowseScreen = () => {
     }, []);
 
     useEffect(() => {
-        console.log("Course loading useEffect triggered:", { loading, code, hasCode: !!code });
+        // console.log("Course loading useEffect triggered:", { loading, code, hasCode: !!code });
         if (loading || !code) {
-            console.log("Exiting early - loading:", loading, "code:", code);
+            // console.log("Exiting early - loading:", loading, "code:", code);
             return;
         }
         const run = async () => {
@@ -143,7 +143,7 @@ const BrowseScreen = () => {
             if (present || currCourse) {
                 // console.log("found in sessionStorage");
                 fetchedData = present || currCourse;
-                console.log("Course found in cache:", {
+                // console.log("Course found in cache:", {
                     fetchedData,
                     hasChildren: !!fetchedData?.children,
                     isArray: Array.isArray(fetchedData?.children),
@@ -162,13 +162,13 @@ const BrowseScreen = () => {
                 ) {
                     const defaultYearIndex = fetchedData.children.length - 1;
                     const defaultYear = fetchedData.children[defaultYearIndex];
-                    console.log("Checking default year:", {
+                    // console.log("Checking default year:", {
                         defaultYear,
                         hasChildren: !!defaultYear?.children,
                         childrenLength: defaultYear?.children?.length,
                     });
                     if (defaultYear && defaultYear.children) {
-                        console.log(
+                        // console.log(
                             "Auto-selecting year after course load:",
                             defaultYear.name,
                             "isMobile:",
@@ -179,10 +179,10 @@ const BrowseScreen = () => {
                         );
                         dispatch(ChangeFolder(defaultYear));
                     } else {
-                        console.log("Default year has no children, skipping auto-select");
+                        // console.log("Default year has no children, skipping auto-select");
                     }
                 } else {
-                    console.log("Course has no valid children array, skipping auto-select");
+                    // console.log("Course has no valid children array, skipping auto-select");
                 }
             } else {
                 let fetchingToast = toast.loading("Loading course data...");
@@ -208,7 +208,7 @@ const BrowseScreen = () => {
                         const defaultYearIndex = fetchedData.children.length - 1;
                         const defaultYear = fetchedData.children[defaultYearIndex];
                         if (defaultYear && defaultYear.children) {
-                            console.log(
+                            // console.log(
                                 "Auto-selecting year after API load:",
                                 defaultYear.name,
                                 "isMobile:",

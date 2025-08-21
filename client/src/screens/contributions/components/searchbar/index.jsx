@@ -51,7 +51,7 @@ const SearchBar = ({ type, handleSetCourse }) => {
             setLoading(false);
             setError(true);
             setSelected(null);
-            console.log(error);
+            // console.log(error);
         }
     };
     return (

@@ -70,7 +70,7 @@ const Contributions = () => {
             setSubmitEnabled(true);
             contributionSection.classList.remove("show");
             toast.error("Failed to upload! Please try again.");
-            console.log(error);
+            // console.log(error);
         }
 
         //refresh the course in session storage to include the new file.
@@ -88,7 +88,7 @@ const Contributions = () => {
             dispatch(ChangeCurrentYearData(currYear, data.children[currYear].children));
             toast.dismiss(loadingCourseToastId);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             return null;
         }
     }

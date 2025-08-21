@@ -45,7 +45,7 @@ const BrowseFolder = ({
             dispatch(UpdateCourses(data));
             dispatch(ChangeCurrentYearData(currYear, data.children[currYear].children));
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             toast.error("Failed to rename folder");
         }
     };
@@ -64,7 +64,7 @@ const BrowseFolder = ({
             dispatch(UpdateCourses(data));
             dispatch(ChangeCurrentYearData(currYear, data.children[currYear].children));
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             toast.error("Failed to delete folder.");
         }
         setShowConfirm(false);

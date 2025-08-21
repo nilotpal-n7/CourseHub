@@ -37,7 +37,7 @@ const LandingPage = () => {
                 navigate(`/dashboard`);
             } catch (error) {
                 dispatch(LogoutUser());
-                console.log(error.message);
+                // console.log(error.message);
                 setLoading(false);
             }
         }
