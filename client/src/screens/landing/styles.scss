@@ -91,12 +91,12 @@
     @media screen and (max-width: 768px) {
         .bottom {
             .content {
-                padding: 0.6em;
+                padding: 0.8em;
                 .text {
                     flex: 0.55;
                     p {
                         font-size: 0.85rem;
-                        line-height: 1.2;
+                        line-height: 1.3;
                     }
                 }
                 .btn-container {
@@ -105,21 +105,45 @@
             }
         }
     }
+
+    // Additional breakpoint for better tablet experience
+    @media screen and (max-width: 600px) {
+        .bottom {
+            .content {
+                padding: 0.7rem;
+                .text {
+                    p {
+                        font-size: 0.8rem;
+                        line-height: 1.25;
+                    }
+                }
+            }
+        }
+    }
     @media screen and (max-width: 480px) {
         .top {
-            height: 90%;
+            height: 85%;
         }
         .bottom {
-            height: 10%;
+            height: 15%;
+            min-height: 80px;
             .content {
-                padding: 0.5em;
+                padding: 1rem 0.5rem;
+                flex-direction: column;
+                gap: 0.8rem;
                 .text {
-                    display: none;
+                    flex: none;
+                    text-align: center;
+                    p {
+                        font-size: 0.9rem;
+                        line-height: 1.4;
+                        margin: 0;
+                    }
                 }
                 .btn-container {
-                    flex: 1;
+                    flex: none;
                     justify-content: center;
-                    flex-direction: row;
+                    width: 100%;
                     .line {
                         display: none;
                     }
@@ -129,9 +153,37 @@
     }
     @media screen and (max-width: 360px) {
         .bottom {
-            height: 8%;
+            height: 18%;
+            min-height: 100px;
             .content {
-                padding: 0.3em;
+                padding: 1rem 0.4rem;
+                gap: 1rem;
+                .text {
+                    p {
+                        font-size: 0.85rem;
+                        line-height: 1.3;
+                    }
+                }
+            }
+        }
+    }
+
+    // Handle landscape orientation on mobile
+    @media screen and (max-height: 500px) and (max-width: 900px) {
+        .top {
+            height: 75%;
+        }
+        .bottom {
+            height: 25%;
+            min-height: 120px;
+            .content {
+                padding: 0.8rem;
+                .text {
+                    p {
+                        font-size: 0.8rem;
+                        line-height: 1.2;
+                    }
+                }
             }
         }
     }
