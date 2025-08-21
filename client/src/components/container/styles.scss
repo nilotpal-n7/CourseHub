@@ -21,18 +21,24 @@
             padding: 0px;
         }
     }
-    
+
     // Mobile overflow fix - only affects mobile screens
     @media screen and (max-width: 768px) {
         .container-content {
-            padding: 10px 20px;
+            padding: 10px 16px;
             overflow-x: hidden;
         }
     }
-    
+
     @media screen and (max-width: 480px) {
         .container-content {
-            padding: 10px 15px;
+            padding: 10px 12px;
+        }
+    }
+
+    @media screen and (max-width: 360px) {
+        .container-content {
+            padding: 10px 8px;
         }
     }
 }

@@ -106,7 +106,7 @@ const Dashboard = () => {
     const handleClick = (code) => {
         let Code = code.replaceAll(" ", "");
         dispatch(ChangeCurrentCourse(null, Code.toUpperCase()));
-        navigate("/browse");
+        navigate(`/browse/${Code.toUpperCase()}`);
     };
     // console.log(user);
 

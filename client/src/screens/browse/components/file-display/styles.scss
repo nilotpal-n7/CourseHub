@@ -1,4 +1,4 @@
-.file-display{
+.file-display {
     width: 200px;
     height: 220px;
     background-color: white;
@@ -6,39 +6,40 @@
     margin-right: 14px;
     margin-bottom: 15px;
     &.verified {
-    border: 2px solid #4CAF50;
-  }
+        border: 2px solid #4caf50;
+    }
 
-  &.unverified {
-    border: 2px solid #F44336;
-  }
-    .img-preview{
+    &.unverified {
+        border: 2px solid #f44336;
+    }
+    .img-preview {
         width: 100%;
         height: 140px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.32);
         background-color: antiquewhite;
         // background: url(./assets/bgImg.svg), none;
-        background-size:contain;
+        background-size: contain;
         background-repeat: no-repeat;
         background-position: top;
-        .top,.view{
+        .top,
+        .view {
             transition: opacity 200ms ease;
             opacity: 0;
         }
-        .top{
-            .verify{
-                background: url(./assets/Verify.svg),none;
+        .top {
+            .verify {
+                background: url(./assets/Verify.svg), none;
             }
-            .unverify{
-                background: url(./assets/Unverify.svg),none;
+            .unverify {
+                background: url(./assets/Unverify.svg), none;
             }
-            .share{
+            .share {
                 background: url(./assets/Share.svg), none;
             }
-            .download{
+            .download {
                 background: url(./assets/Download.svg), none;
             }
-            .star{
+            .star {
                 background: url(./assets/Favorites.svg), none;
             }
             height: 30%;
@@ -47,7 +48,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            .share, .download, .star, .verify, .unverify{
+            .share,
+            .download,
+            .star,
+            .verify,
+            .unverify {
                 display: block;
                 width: 24px;
                 height: 24px;
@@ -58,7 +63,7 @@
                 background-size: contain;
             }
         }
-        .view{
+        .view {
             cursor: pointer;
             height: 70%;
             width: 100%;
@@ -69,89 +74,101 @@
             justify-content: center;
         }
     }
-    .content{
+    .content {
         height: 80px;
         display: flex;
         justify-content: space-between;
         padding: 10px 0;
         flex-direction: column;
         text-align: center;
-        .title{
+        .title {
             font-size: 1rem;
         }
-        .info, .contributor{
+        .info,
+        .contributor {
             font-size: 0.8rem;
             color: rgba(0, 0, 0, 0.68);
         }
     }
-    &:hover{
+    &:hover {
         border: 1px solid #000;
-        .img-preview{
-            .top, .view{
+        .img-preview {
+            .top,
+            .view {
                 opacity: 100;
             }
         }
     }
-    
+
     @media screen and (max-width: 768px) {
-        width: 170px;
-        height: 180px;
-        margin-right: 10px;
-        margin-bottom: 10px;
-        
+        width: calc(30% - 8px);
+        height: auto;
+        aspect-ratio: 0.9;
+        margin: 8px;
+
         .img-preview {
-            height: 115px;
-            
+            height: 60%; // Proportional to new aspect ratio
+
             .top {
-                .share, .download, .star, .verify, .unverify {
+                .share,
+                .download,
+                .star,
+                .verify,
+                .unverify {
                     width: 20px;
                     height: 20px;
                     margin: 8px;
                 }
             }
         }
-        
+
         .content {
             height: 65px;
             padding: 8px 0;
-            
+
             .title {
                 font-size: 0.75rem;
             }
-            
-            .info, .contributor {
+
+            .info,
+            .contributor {
                 font-size: 0.65rem;
             }
         }
     }
-    
+
     @media screen and (max-width: 480px) {
-        width: 130px;
-        height: 150px;
-        margin-right: 8px;
-        margin-bottom: 8px;
-        
+        width: calc(47% - 8px);
+        height: auto;
+        aspect-ratio: 0.9; // Slightly taller than square for file display
+        margin: 6px;
+
         .img-preview {
-            height: 95px;
-            
+            height: 60%; // Proportional to new aspect ratio
+
             .top {
-                .share, .download, .star, .verify, .unverify {
+                .share,
+                .download,
+                .star,
+                .verify,
+                .unverify {
                     width: 18px;
                     height: 18px;
                     margin: 6px;
                 }
             }
         }
-        
+
         .content {
             height: 55px;
             padding: 6px 0;
-            
+
             .title {
                 font-size: 0.7rem;
             }
-            
-            .info, .contributor {
+
+            .info,
+            .contributor {
                 font-size: 0.6rem;
             }
         }

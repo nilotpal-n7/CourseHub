@@ -1,22 +1,30 @@
-.heading{
+.heading {
     font-family: "Regular";
     font-size: 2.5rem;
-    font-weight: normal;    
-    &.bold{
-        font-family: 'Bold';
+    font-weight: normal;
+    margin: 0;
+
+    &.bold {
+        font-family: "Bold";
     }
-    &.thin{
-        font-family: 'Light';
+    &.thin {
+        font-family: "Light";
     }
-    &.light{
+    &.light {
         color: #fff;
     }
-    
+
     @media screen and (max-width: 768px) {
         font-size: 2rem;
+        line-height: 1.2;
     }
-    
+
     @media screen and (max-width: 480px) {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
+        line-height: 1.1;
+    }
+
+    @media screen and (max-width: 360px) {
+        font-size: 1.6rem;
     }
 }

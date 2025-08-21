@@ -7,7 +7,7 @@ import { ChangeCurrentYearData, UpdateCourses } from "../../../../actions/filebr
 import { ChangeFolder, ChangeCurrentCourse } from "../../../../actions/filebrowser_actions";
 import { getCourse } from "../../../../api/Course";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import searchFolderById from "../../../../utils/searchFolderById";
 import { toast } from "react-toastify";
 import { capitalise } from "../../../../utils/capitalise";
@@ -24,6 +24,7 @@ const Collapsible = ({ course, color, state }) => {
     const currentCourse = useSelector((state) => state.fileBrowser.currentCourse);
     const allCourseData = useSelector((state) => state.fileBrowser.allCourseData);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const onClick = () => {
         if (!open) triggerGetCourse();
@@ -39,7 +40,7 @@ const Collapsible = ({ course, color, state }) => {
         try {
             const allLocal = JSON.parse(sessionStorage.getItem("AllCourses"));
             insessionStorage = allLocal?.find(
-                (course) => course.code.toLowerCase() === code.toLowerCase().replaceAll(" ","")
+                (course) => course.code.toLowerCase() === code.toLowerCase().replaceAll(" ", "")
             );
         } catch (error) {
             sessionStorage.removeItem("AllCourses");
@@ -47,7 +48,7 @@ const Collapsible = ({ course, color, state }) => {
         }
         try {
             currCourse = allCourseData.find(
-                (course) => course.code.toLowerCase() === code.toLowerCase().replaceAll(" ","")
+                (course) => course.code.toLowerCase() === code.toLowerCase().replaceAll(" ", "")
             );
         } catch (error) {
             sessionStorage.removeItem("AllCourses");
@@ -96,7 +97,14 @@ const Collapsible = ({ course, color, state }) => {
                     toast.error("Course data could not be loaded.");
                     return;
                 }
+
+                const courseCode = course.code.replaceAll(" ", "").toUpperCase();
+
                 dispatch(ChangeCurrentCourse(fetched.children, fetched.code));
+
+                // Navigate to the course URL (consistent with mobile dropdown)
+                navigate(`/browse/${courseCode}`);
+
                 const yearIndex = fetched.children.length - 1;
                 const yearFolder = fetched.children?.[yearIndex];
 
@@ -111,10 +119,10 @@ const Collapsible = ({ course, color, state }) => {
 
                 dispatch(ChangeCurrentYearData(yearIndex, yearChildren));
                 dispatch(ChangeFolder(yearFolder));
-                
+
                 setInitial(false);
             } catch (error) {
-                console.error( error);
+                console.error(error);
                 toast.error("Something went wrong while loading the course.");
             }
         };
@@ -122,12 +130,13 @@ const Collapsible = ({ course, color, state }) => {
         run();
     };
 
-
-    let courseCode=course.code.replaceAll(" ", "")
+    let courseCode = course.code.replaceAll(" ", "");
     useEffect(() => {
         // console.log(currCourseCode);
         // console.log(course);
-        if (currCourseCode?.toLowerCase() !== courseCode?.toLowerCase()){setOpen(false);}
+        if (currCourseCode?.toLowerCase() !== courseCode?.toLowerCase()) {
+            setOpen(false);
+        }
         if (currCourseCode?.toLowerCase() === courseCode?.toLowerCase()) {
             //console.log("called");
             triggerGetCourse();
@@ -168,9 +177,7 @@ const Collapsible = ({ course, color, state }) => {
                     <div className="text">
                         <p className="code">{course.code ? course.code.toUpperCase() : "CL 301"}</p>
                         <p className="name">
-                            {course.name
-                                ? capitalise(course.name)
-                                : "Name Unavailable"}
+                            {course.name ? capitalise(course.name) : "Name Unavailable"}
                         </p>
                     </div>
                     <div className="arrow"></div>

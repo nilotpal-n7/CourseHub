@@ -15,13 +15,15 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
+    gap: 0;
 }
 
 .coursecard-container {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
+    gap: 0;
 }
 
 .fav-container {
@@ -44,10 +46,12 @@
     .split {
         flex-direction: column;
         align-items: flex-start;
+        gap: 25px;
     }
 
     .exam-card-container {
-        justify-content: flex-start;
+        justify-content: space-between;
+        padding: 0 5px;
     }
 }
 
@@ -56,31 +60,87 @@
     .App {
         overflow-x: hidden;
     }
-    
+
     .split {
-        gap: 20px;
+        gap: 25px;
     }
-    
+
+    // Profile section spacing improvements
+    .split > div:first-child {
+        .heading {
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .subheading {
+            margin-top: 12px;
+            line-height: 1.3;
+        }
+    }
+
     .exam-card-container,
     .coursecard-container,
     .fav-container {
-        gap: 15px;
+        gap: 0;
+    }
+
+    .exam-card-container {
+        justify-content: space-between;
+        padding: 0 5px;
+    }
+
+    .coursecard-container {
+        justify-content: space-between;
+        padding: 0 5px;
     }
 }
 
 @media screen and (max-width: 480px) {
     .split {
-        gap: 15px;
+        gap: 20px;
     }
-    
+
+    // Enhanced profile section spacing for small screens
+    .split > div:first-child {
+        .heading {
+            margin-bottom: 6px;
+            line-height: 1.1;
+        }
+
+        .subheading {
+            margin-top: 10px;
+            line-height: 1.2;
+        }
+    }
+
     .exam-card-container,
     .coursecard-container,
     .fav-container {
-        gap: 10px;
+        gap: 0;
+    }
+
+    .exam-card-container {
+        justify-content: space-between;
+        padding: 0 8px;
+    }
+
+    .coursecard-container {
+        justify-content: space-between;
+        padding: 0 8px;
     }
 }
 
-.favorites-coming-soon{
+@media screen and (max-width: 360px) {
+    .exam-card-container {
+        padding: 0 5px;
+    }
+
+    .coursecard-container {
+        padding: 0 5px;
+    }
+}
+
+.favorites-coming-soon {
     width: 100%;
     text-align: center;
     font-weight: 530;
@@ -93,7 +153,7 @@
     .fav-container {
         justify-content: center;
     }
-    
+
     .favorites-coming-soon {
         font-size: 1.3rem;
     }

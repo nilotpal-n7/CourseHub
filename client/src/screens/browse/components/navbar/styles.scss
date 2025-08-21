@@ -1,38 +1,38 @@
-.nav-browse{
+.nav-browse {
     display: flex;
     height: 100%;
     align-items: center;
     padding: 0 15px;
     justify-content: space-between;
     position: relative;
-    
+
     .nav-content {
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        
-        .navlinks{
+
+        .navlinks {
             display: flex;
-            
+
             &.desktop-nav {
                 @media screen and (max-width: 768px) {
                     display: none;
                 }
             }
         }
-        
+
         .mobile-menu-toggle {
             display: none;
             cursor: pointer;
             padding: 8px;
             position: relative;
             z-index: 1001;
-            
+
             @media screen and (max-width: 768px) {
                 display: block;
             }
-            
+
             .three-dots {
                 display: flex;
                 flex-direction: column;
@@ -44,7 +44,7 @@
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                
+
                 span {
                     width: 4px;
                     height: 4px;
@@ -54,7 +54,7 @@
                     position: relative;
                     pointer-events: none;
                 }
-                
+
                 &.cross {
                     span {
                         &:first-child {
@@ -67,12 +67,12 @@
                             left: 2px;
                             pointer-events: none;
                         }
-                        
+
                         &:nth-child(2) {
                             opacity: 0;
                             transform: scale(0);
                         }
-                        
+
                         &:last-child {
                             transform: rotate(-45deg);
                             width: 16px;
@@ -88,7 +88,7 @@
             }
         }
     }
-    
+
     // Mobile Menu Overlay
     .mobile-menu {
         position: fixed;
@@ -102,13 +102,13 @@
         visibility: hidden;
         transition: all 0.3s ease;
         pointer-events: none;
-        
+
         &.open {
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
         }
-        
+
         .mobile-menu-content {
             position: absolute;
             top: 80px;
@@ -121,22 +121,22 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-            
+
             .nav-link {
                 margin: 0;
                 padding: 18px 20px;
                 border-bottom: 1px solid #333;
                 color: #fff;
-                font-family: 'Regular';
+                font-family: "Regular";
                 font-size: 1rem;
                 transition: all 0.2s ease;
                 cursor: pointer;
-                
+
                 &:hover {
                     background-color: #1a1a1a;
                     color: #f0f0f0;
                 }
-                
+
                 &:last-child {
                     border-bottom: none;
                     border-radius: 0;
@@ -147,13 +147,13 @@
 }
 
 @media screen and (max-width: 880px) {
-    .search-bar-container{
+    .search-bar-container {
         display: none;
     }
 }
 
 @media screen and (max-width: 768px) {
     .nav-browse {
-        padding: 0 10px;
+        padding: 0 20px;
     }
 }

@@ -1,41 +1,41 @@
-.wrap{
+.wrap {
     width: 560px;
     max-width: 600px;
 
     // display: flex;
     // flex-direction: column;
-    &.passive{
+    &.passive {
         margin-left: 64px;
-        .search{
+        .search {
             margin: 0;
             width: 100%;
             width: 300px;
         }
-        .search-results{
+        .search-results {
             margin-left: 0;
             margin-top: 44px;
             width: 300px;
         }
     }
-    .search{
+    .search {
         margin: 0 20px;
         display: flex;
         justify-content: flex-end;
-        input{
+        input {
             font-size: 18px;
             width: 100%;
             height: 40px;
             padding: 20px 20px;
-            &::placeholder{
-                font-family: 'Regular';
+            &::placeholder {
+                font-family: "Regular";
                 color: #000;
                 font-size: 1rem;
             }
-            &:focus{
+            &:focus {
                 outline-width: 0;
             }
         }
-        .search-img{
+        .search-img {
             border: none;
             cursor: pointer;
             width: 30px;
@@ -44,9 +44,8 @@
             background: url(./Search.svg);
             margin: 8px;
         }
-        
     }
-    .search-results{
+    .search-results {
         position: absolute;
         width: 518px;
         height: auto;
@@ -58,28 +57,27 @@
         color: #222;
         padding: 10px 20px;
         overflow-y: hidden;
-        .code{
+        .code {
             margin-right: 1rem;
-            font-family: 'Bold';
+            font-family: "Bold";
         }
-        .extra-info{
+        .extra-info {
             margin-left: 1rem;
-            font-family: 'Bold';
+            font-family: "Bold";
         }
     }
     @media screen and (max-width: 1240px) {
         width: 500px;
         // display: none;
-        .search-results{
+        .search-results {
             width: 458px;
         }
-        
     }
     @media screen and (max-width: 1140px) {
         max-width: 350px;
         width: 85%;
         // display: none;
-        .search-results{
+        .search-results {
             max-width: 350px;
             width: 70%;
         }
@@ -88,5 +86,9 @@
         &.passive {
             margin-left: 20px;
         }
+    }
+
+    @media screen and (max-width: 900px) {
+        display: none !important;
     }
 }

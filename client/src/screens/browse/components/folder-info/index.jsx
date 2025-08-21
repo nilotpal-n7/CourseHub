@@ -29,6 +29,7 @@ const FolderInfo = ({
     contributionHandler,
     folderId,
     courseCode,
+    isMobileView = false, // New prop for mobile view
 }) => {
     const dispatch = useDispatch();
     const currYear = useSelector((state) => state.fileBrowser.currentYear);
@@ -256,50 +257,56 @@ const FolderInfo = ({
                     </div>
                 </div>
 
-                {/* Consolidated actions container */}
-                <div className="main-actions">
-                    {/* Download button - always visible */}
-                    <button
-                        className="btn download"
-                        onClick={() => downloadAndSaveFolder(folderId, name)}
-                        title="Download entire folder as ZIP"
-                    >
-                        <span className="icon download-icon"></span>
-                        <span className="text">Download</span>
-                    </button>
-
-                    {/* Conditional action buttons */}
-                    {!isReadOnlyCourse && canDownload && (
-                        <button className="btn primary" onClick={contributionHandler}>
-                            <span className="icon plus-icon"></span>
-                            <span className="text">{isBR ? "Add File" : "Contribute"}</span>
-                        </button>
-                    )}
-
-                    {!isReadOnlyCourse && isBR && !canDownload && (
+                {/* Consolidated actions container - Hidden for mobile view */}
+                {!isMobileView && (
+                    <div className="main-actions">
+                        {/* Download button - always visible */}
                         <button
-                            className="btn primary"
-                            onClick={handleCreateFolder}
-                            disabled={isAdding}
+                            className="btn download"
+                            onClick={() => downloadAndSaveFolder(folderId, name)}
+                            title="Download entire folder as ZIP"
                         >
-                            <span className="icon plus-icon"></span>
-                            <span className="text">{isAdding ? "Creating..." : "Add Folder"}</span>
+                            <span className="icon download-icon"></span>
+                            <span className="text">Download</span>
                         </button>
-                    )}
-                </div>
+
+                        {/* Conditional action buttons */}
+                        {!isReadOnlyCourse && canDownload && (
+                            <button className="btn primary" onClick={contributionHandler}>
+                                <span className="icon plus-icon"></span>
+                                <span className="text">{isBR ? "Add File" : "Contribute"}</span>
+                            </button>
+                        )}
+
+                        {!isReadOnlyCourse && isBR && !canDownload && (
+                            <button
+                                className="btn primary"
+                                onClick={handleCreateFolder}
+                                disabled={isAdding}
+                            >
+                                <span className="icon plus-icon"></span>
+                                <span className="text">
+                                    {isAdding ? "Creating..." : "Add Folder"}
+                                </span>
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
 
             <Share link={`${clientRoot}/browse/${courseCode}/${folderId}`} />
-            <ConfirmDialog
-                show={showConfirm}
-                input={true}
-                inputValue={newFolderName}
-                onInputChange={(e) => setNewFolderName(e.target.value)}
-                childType={childType}
-                onChildTypeChange={setChildType}
-                onConfirm={handleConfirmCreateFolder}
-                onCancel={() => setShowConfirm(false)}
-            />
+            {!isMobileView && (
+                <ConfirmDialog
+                    show={showConfirm}
+                    input={true}
+                    inputValue={newFolderName}
+                    onInputChange={(e) => setNewFolderName(e.target.value)}
+                    childType={childType}
+                    onChildTypeChange={setChildType}
+                    onConfirm={handleConfirmCreateFolder}
+                    onCancel={() => setShowConfirm(false)}
+                />
+            )}
         </>
     );
 };
