@@ -3,8 +3,16 @@ import Folder from "./components/folder";
 import FolderController from "./components/folder-controller";
 import "./styles.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { ChangeCurrentYearData, UpdateCourses } from "../../../../actions/filebrowser_actions";
-import { ChangeFolder, ChangeCurrentCourse } from "../../../../actions/filebrowser_actions";
+import {
+    ChangeCurrentYearData,
+    UpdateCourses,
+    ChangeCurrentCourse,
+} from "../../../../actions/filebrowser_actions";
+import {
+    ChangeFolder,
+    PushFolderHistory,
+    ClearFolderHistory,
+} from "../../../../actions/filebrowser_actions";
 import { getCourse } from "../../../../api/Course";
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -119,6 +127,7 @@ const Collapsible = ({ course, color, state }) => {
                 const yearChildren = Array.isArray(yearFolder.children) ? yearFolder.children : [];
 
                 dispatch(ChangeCurrentYearData(yearIndex, yearChildren));
+                dispatch(ClearFolderHistory()); // Clear history when selecting a new course from collapsible
                 dispatch(ChangeFolder(yearFolder));
 
                 setInitial(false);

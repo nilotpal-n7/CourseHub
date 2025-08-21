@@ -6,6 +6,7 @@ const FileBrowserReducer = (
         currentYear: null,
         currentYearFolderStructure: [],
         allCourseData: [],
+        folderHistory: [], // Add folder navigation history
     },
     action
 ) => {
@@ -85,6 +86,27 @@ const FileBrowserReducer = (
             return {
                 ...state,
                 refreshKey: action.payload,
+            };
+
+        case "PUSH_FOLDER_HISTORY":
+            return {
+                ...state,
+                folderHistory: [...state.folderHistory, action.payload],
+            };
+
+        case "POP_FOLDER_HISTORY":
+            const newHistory = [...state.folderHistory];
+            const previousFolder = newHistory.pop();
+            return {
+                ...state,
+                folderHistory: newHistory,
+                currentFolder: previousFolder || null,
+            };
+
+        case "CLEAR_FOLDER_HISTORY":
+            return {
+                ...state,
+                folderHistory: [],
             };
 
         default:

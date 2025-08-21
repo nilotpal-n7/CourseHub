@@ -18,6 +18,9 @@ import {
     LoadCourses,
     UpdateCourses,
     RefreshCurrentFolder,
+    PushFolderHistory,
+    PopFolderHistory,
+    ClearFolderHistory,
 } from "../../actions/filebrowser_actions";
 import { getColors } from "../../utils/colors";
 import { AddNewCourseLocal, LoginUser, LogoutUser } from "../../actions/user_actions";
@@ -46,6 +49,7 @@ const BrowseScreen = () => {
     const isMobile = useIsMobile();
     const user = useSelector((state) => state.user);
     const folderData = useSelector((state) => state.fileBrowser.currentFolder);
+    const folderHistory = useSelector((state) => state.fileBrowser.folderHistory);
     const refreshKey = useSelector((state) => state.fileBrowser.refreshKey);
     const currCourse = useSelector((state) => state.fileBrowser.currentCourse);
     const currCourseCode = useSelector((state) => state.fileBrowser.currentCourseCode);
@@ -177,6 +181,7 @@ const BrowseScreen = () => {
                         dispatch(
                             ChangeCurrentYearData(defaultYearIndex, defaultYear.children || [])
                         );
+                        dispatch(ClearFolderHistory()); // Clear history when starting with a new course/year
                         dispatch(ChangeFolder(defaultYear));
                     } else {
                         // console.log("Default year has no children, skipping auto-select");
@@ -217,6 +222,7 @@ const BrowseScreen = () => {
                             dispatch(
                                 ChangeCurrentYearData(defaultYearIndex, defaultYear.children || [])
                             );
+                            dispatch(ClearFolderHistory()); // Clear history when starting with a new course/year
                             dispatch(ChangeFolder(defaultYear));
                         }
                     }
@@ -293,6 +299,16 @@ const BrowseScreen = () => {
             ? "No data available for this course"
             : "Select a course...";
 
+    // Handler for back button
+    const handleBackClick = () => {
+        if (folderHistory.length > 0) {
+            dispatch(PopFolderHistory());
+        }
+    };
+
+    // Check if we can go back (not at course root)
+    const canGoBack = folderHistory.length > 0;
+
     // Helper: get all courses for dropdown
     const allCourses = [
         ...(user.user?.courses || []),
@@ -312,6 +328,7 @@ const BrowseScreen = () => {
                 // Clear current folder data while loading
                 dispatch(ChangeCurrentYearData(null, []));
                 dispatch(ChangeFolder(null));
+                dispatch(ClearFolderHistory()); // Clear folder history when changing courses
 
                 // Check if course is already in memory
                 let courseData = allCourseData?.find(
@@ -370,6 +387,7 @@ const BrowseScreen = () => {
         if (selectedYearIndex !== currYear && !isNaN(selectedYearIndex)) {
             const selectedYear = allYears[selectedYearIndex];
             if (selectedYear) {
+                dispatch(ClearFolderHistory()); // Clear folder history when changing years
                 dispatch(ChangeCurrentYearData(selectedYearIndex, selectedYear.children));
                 dispatch(ChangeFolder(selectedYear));
                 dispatch(RefreshCurrentFolder());
@@ -420,6 +438,14 @@ const BrowseScreen = () => {
                                 </div>
                             </div>
                             <div className="files">
+                                {canGoBack && (
+                                    <button
+                                        className="mobile-back-btn-circular"
+                                        onClick={handleBackClick}
+                                    >
+                                        <i className="fa fa-arrow-left" aria-hidden="true"></i>
+                                    </button>
+                                )}
                                 {!folderData ? (
                                     <div className="empty-message">{HeaderText}</div>
                                 ) : folderData?.childType === "File" ? (

@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { getCourse } from "../../../../api/Course";
 import { useDispatch } from "react-redux";
-import { ChangeFolder } from "../../../../actions/filebrowser_actions";
+import { ChangeFolder, PushFolderHistory } from "../../../../actions/filebrowser_actions";
 import { deleteFolder, renameFolder } from "../../../../api/Folder";
 import { toast } from "react-toastify";
 import {
@@ -25,6 +25,7 @@ const BrowseFolder = ({
 }) => {
     const dispatch = useDispatch();
     const currYear = useSelector((state) => state.fileBrowser.currentYear);
+    const currentFolder = useSelector((state) => state.fileBrowser.currentFolder);
     const isBR = useSelector((state) => state.user.user.isBR);
     const [showConfirm, setShowConfirm] = useState(false);
     const user = useSelector((state) => state.user.user);
@@ -51,7 +52,10 @@ const BrowseFolder = ({
     };
 
     const onClick = (folderData) => {
-        // return;
+        // Push current folder to history before navigating
+        if (currentFolder) {
+            dispatch(PushFolderHistory(currentFolder));
+        }
         dispatch(ChangeFolder(folderData));
     };
 

@@ -59,5 +59,18 @@ export const RemoveFileFromFolder = (fileId) => ({
 
 export const RefreshCurrentFolder = () => ({
     type: "REFRESH_CURRENT_FOLDER",
-    payload: Date.now(), 
+    payload: Date.now(),
+});
+
+export const PushFolderHistory = (folder) => ({
+    type: "PUSH_FOLDER_HISTORY",
+    payload: folder,
+});
+
+export const PopFolderHistory = () => ({
+    type: "POP_FOLDER_HISTORY",
+});
+
+export const ClearFolderHistory = () => ({
+    type: "CLEAR_FOLDER_HISTORY",
 });
