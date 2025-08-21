@@ -110,11 +110,11 @@
     @media screen and (max-width: 600px) {
         .bottom {
             .content {
-                padding: 0.7rem;
+                padding: 1.2rem;
                 .text {
                     p {
-                        font-size: 0.8rem;
-                        line-height: 1.25;
+                        font-size: 0.9rem;
+                        line-height: 1.4;
                     }
                 }
             }
@@ -126,24 +126,33 @@
         }
         .bottom {
             height: 15%;
-            min-height: 80px;
+            min-height: 120px;
+            position: fixed;
+            bottom: 0;
             .content {
-                padding: 1rem 0.5rem;
+                padding: 1rem 1rem;
                 flex-direction: column;
-                gap: 0.8rem;
+                gap: 1rem;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
                 .text {
                     flex: none;
                     text-align: center;
+                    max-width: 90%;
                     p {
-                        font-size: 0.9rem;
-                        line-height: 1.4;
+                        font-size: 0.85rem;
+                        line-height: 1.3;
                         margin: 0;
+                        font-weight: 500;
+                        color: #333;
                     }
                 }
                 .btn-container {
                     flex: none;
                     justify-content: center;
                     width: 100%;
+                    max-width: 280px;
                     .line {
                         display: none;
                     }
@@ -153,31 +162,11 @@
     }
     @media screen and (max-width: 360px) {
         .bottom {
-            height: 18%;
-            min-height: 100px;
+            height: 15%;
+            min-height: 110px;
             .content {
-                padding: 1rem 0.4rem;
-                gap: 1rem;
-                .text {
-                    p {
-                        font-size: 0.85rem;
-                        line-height: 1.3;
-                    }
-                }
-            }
-        }
-    }
-
-    // Handle landscape orientation on mobile
-    @media screen and (max-height: 500px) and (max-width: 900px) {
-        .top {
-            height: 75%;
-        }
-        .bottom {
-            height: 25%;
-            min-height: 120px;
-            .content {
-                padding: 0.8rem;
+                padding: 0.8rem 0.8rem;
+                gap: 0.8rem;
                 .text {
                     p {
                         font-size: 0.8rem;

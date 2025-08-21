@@ -8,9 +8,11 @@
     justify-content: center;
     align-items: center;
     margin: 5px;
-    border-radius: 6px;
+    border-radius: 8px;
     border: none;
     font-family: inherit;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
     .logo {
         background: url(./logo.svg), none;
         background-repeat: no-repeat;
@@ -23,17 +25,21 @@
         margin-left: 10px;
         font-family: "Bold";
         font-size: 1rem;
+        font-weight: 600;
     }
     cursor: pointer;
-    transition: 200ms ease;
+    transition: all 0.2s ease;
     &:hover {
-        transform: scale(1.02);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        background-color: #1a1a1a;
     }
 
     // Improve touch targets for mobile
     &:active {
-        transform: scale(0.98);
-        background-color: #1a1a1a;
+        transform: scale(0.97);
+        background-color: #2a2a2a;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     }
 
     // Focus state for accessibility
@@ -50,6 +56,9 @@
 
     // Improve touch response
     -webkit-tap-highlight-color: transparent;
+    
+    // Minimum touch target size for accessibility
+    min-height: 44px;
     @media screen and (max-width: 750px) {
         width: 220px;
         height: 44px;
@@ -64,26 +73,13 @@
     }
     @media screen and (max-width: 480px) {
         width: 100%;
-        max-width: 280px;
-        height: 45px;
-        padding: 12px 20px;
-        margin: 0;
-        border-radius: 8px;
-        .logo {
-            width: 22px;
-            height: 22px;
-        }
-        span {
-            font-size: 0.9rem;
-            margin-left: 10px;
-        }
-    }
-    @media screen and (max-width: 360px) {
-        width: 100%;
         max-width: 260px;
         height: 42px;
-        padding: 10px 18px;
+        padding: 10px 20px;
         margin: 0;
+        border-radius: 8px;
+        font-size: 14px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         .logo {
             width: 20px;
             height: 20px;
@@ -91,6 +87,28 @@
         span {
             font-size: 0.85rem;
             margin-left: 8px;
+            font-weight: 600;
+        }
+        &:active {
+            transform: scale(0.96);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+    }
+    @media screen and (max-width: 360px) {
+        width: 100%;
+        max-width: 240px;
+        height: 40px;
+        padding: 8px 16px;
+        margin: 0;
+        border-radius: 6px;
+        .logo {
+            width: 18px;
+            height: 18px;
+        }
+        span {
+            font-size: 0.8rem;
+            margin-left: 6px;
+            font-weight: 600;
         }
     }
 }
