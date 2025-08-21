@@ -38,7 +38,7 @@ const YearInfo = ({
     };
 
     if (course?.length > 1) course.sort(sortYear);
-
+  
     const handleAddYear = () => {
         setNewYearName("");
         setShowConfirm(true);
