@@ -56,7 +56,7 @@
 
     // Improve touch response
     -webkit-tap-highlight-color: transparent;
-    
+
     // Minimum touch target size for accessibility
     min-height: 44px;
     @media screen and (max-width: 750px) {
@@ -73,41 +73,48 @@
     }
     @media screen and (max-width: 480px) {
         width: 100%;
-        max-width: 260px;
-        height: 42px;
-        padding: 10px 20px;
+        max-width: 270px;
+        height: 44px;
+        padding: 12px 20px;
         margin: 0;
-        border-radius: 8px;
+        border-radius: 10px;
         font-size: 14px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        background-color: #1a1a1a;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+        border: 2px solid transparent;
         .logo {
             width: 20px;
             height: 20px;
         }
         span {
-            font-size: 0.85rem;
-            margin-left: 8px;
+            font-size: 0.9rem;
+            margin-left: 10px;
             font-weight: 600;
         }
+        &:hover {
+            background-color: #2a2a2a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
         &:active {
-            transform: scale(0.96);
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
     }
     @media screen and (max-width: 360px) {
         width: 100%;
-        max-width: 240px;
-        height: 40px;
-        padding: 8px 16px;
+        max-width: 250px;
+        height: 42px;
+        padding: 10px 18px;
         margin: 0;
-        border-radius: 6px;
+        border-radius: 8px;
         .logo {
             width: 18px;
             height: 18px;
         }
         span {
-            font-size: 0.8rem;
-            margin-left: 6px;
+            font-size: 0.85rem;
+            margin-left: 8px;
             font-weight: 600;
         }
     }
