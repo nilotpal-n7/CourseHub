@@ -444,6 +444,7 @@ const BrowseScreen = () => {
                                         onClick={handleBackClick}
                                     >
                                         <i className="fa fa-arrow-left" aria-hidden="true"></i>
+                                        <span>Back</span>
                                     </button>
                                 )}
                                 {!folderData ? (
