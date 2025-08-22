@@ -25,7 +25,7 @@ export const FileModel = model("File", FileSchema);
 const CourseSchema = Schema(
     {
         name: { type: String, required: true },
-        code: { type: String, required: true },
+        code: { type: String, required: true, unique: true },
         children: { type: [{ type: Schema.Types.ObjectId, ref: "Folder" }], default: [] },
         books: [{ type: String }],
     },
