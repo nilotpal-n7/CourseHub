@@ -32,6 +32,7 @@ const Contributions = () => {
     }, []);
 
     const [submitEnabled, setSubmitEnabled] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
     // const [contributionId, setContributionId] = useState("");
 
@@ -43,12 +44,15 @@ const Contributions = () => {
     };
 
     async function handleSubmit() {
+        if (isUploading) return;
+
         const collection = document.getElementsByClassName("contri");
         const contributionSection = collection[0];
         // console.log(toggle);
         // console.log(isAnoynmous);
 
         try {
+            setIsUploading(true);
             setSubmitEnabled(false);
             // console.log(resp);
             let resp = await CreateNewContribution({
@@ -71,6 +75,8 @@ const Contributions = () => {
             contributionSection.classList.remove("show");
             toast.error("Upload failed. Please try again!");
             // console.log(error);
+        } finally {
+            setIsUploading(false);
         }
 
         //refresh the course in session storage to include the new file.
@@ -142,8 +148,8 @@ const Contributions = () => {
                         <></>
                     )}
                 </div>
-                <div className={`button ${submitEnabled}`} onClick={handleSubmit}>
-                    SUBMIT
+                <div className={`button ${submitEnabled && !isUploading}`} onClick={handleSubmit}>
+                    {isUploading ? "SUBMIT" : "SUBMIT"}
                 </div>
             </Wrapper>
         </SectionC>

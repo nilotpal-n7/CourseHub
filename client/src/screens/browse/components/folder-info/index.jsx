@@ -38,6 +38,7 @@ const FolderInfo = ({
     const [newFolderName, setNewFolderName] = useState("");
     const [childType, setChildType] = useState("File");
     const [isAdding, setIsAdding] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
 
     const user = useSelector((state) => state.user.user);
     const isReadOnlyCourse = user?.readOnly?.some(
@@ -190,8 +191,11 @@ const FolderInfo = ({
 
     // Usage function remains the same
     const downloadAndSaveFolder = async (folderId, folderName = "folder") => {
+        if (isDownloading) return;
+
         let toastId;
         try {
+            setIsDownloading(true);
             // Create a persistent toast that doesn't auto-close
             toastId = toast.info("Preparing to download folder...", {
                 autoClose: false,
@@ -228,6 +232,8 @@ const FolderInfo = ({
                 toast.dismiss(toastId);
             }
             toast.error("Failed to download folder.");
+        } finally {
+            setIsDownloading(false);
         }
     };
     return (
@@ -265,9 +271,10 @@ const FolderInfo = ({
                             className="btn download"
                             onClick={() => downloadAndSaveFolder(folderId, name)}
                             title="Download entire folder as ZIP"
+                            disabled={isDownloading}
                         >
                             <span className="icon download-icon"></span>
-                            <span className="text">Download</span>
+                            <span className="text">{isDownloading ? "Download" : "Download"}</span>
                         </button>
 
                         {/* Conditional action buttons */}
