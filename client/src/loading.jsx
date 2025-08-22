@@ -21,7 +21,6 @@ const LoadingPage = () => {
                     return navigate("/login");
                 }
 
-                // console.log("here in loading");
                 const { courses, previousCourses } = await fetchUserCoursesData(user);
 
                 user.courses = courses;
@@ -41,25 +40,14 @@ const LoadingPage = () => {
     }, [dispatch, navigate]);
 
     return (
-        <div
-            className="!flex !flex-col !items-center !justify-center !h-screen !w-screen !bg-black !text-white"
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100vh",
-                width: "100vw",
-                backgroundColor: "black",
-                color: "white",
-            }}
-        >
-            <div className="flex justify-center items-center relative">
-                <div className="jimu-primary-loading"></div>
-            </div>
-            <div className="mt-10 text-center">
+        <div className="loading-page">
+            {/* Circular Loader */}
+            <div className="loader"></div>
+
+            {/* Text */}
+            <div className="loading-text">
                 <h2>Fetching your courses</h2>
-                <h2>This may take upto a minute</h2>
+                <h2>This may take up to a minute</h2>
             </div>
         </div>
     );

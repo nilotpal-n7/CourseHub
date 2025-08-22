@@ -206,10 +206,27 @@ function Courses() {
 
     const handleConfirmSync = async () => {
         setUploading(true);
-        setSyncProgress({ current: 0, total: csvData.length });
+
+        // Calculate the actual number of courses that need processing
+        const coursesToProcess =
+            (uploadStats.missingCoursesData?.length || 0) +
+            (uploadStats.nameMismatchData?.length || 0);
+        setSyncProgress({ current: 0, total: coursesToProcess });
 
         try {
-            const results = await bulkSyncCourses(csvData, (current, total) => {
+            const analysis = {
+                missingCourses: uploadStats.missingCoursesData || [],
+                nameConflicts:
+                    uploadStats.nameMismatchData?.map((course) => ({
+                        code: course.code,
+                        csvName: course.name,
+                        dbName: courses.find(
+                            (c) => c.code.replace(/\s+/g, "").toUpperCase() === course.code
+                        )?.name,
+                    })) || [],
+            };
+
+            const results = await bulkSyncCourses(csvData, analysis, (current, total) => {
                 setSyncProgress({ current, total });
             });
             setSyncResults(results);

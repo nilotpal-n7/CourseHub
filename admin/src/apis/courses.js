@@ -56,7 +56,7 @@ export const createCourse = async (code, name) => {
 };
 
 // Bulk sync courses from CSV data
-export const bulkSyncCourses = async (courses, onProgress = null) => {
+export const bulkSyncCourses = async (courses, analysis, onProgress = null) => {
     const results = {
         created: [],
         updated: [],
@@ -64,23 +64,57 @@ export const bulkSyncCourses = async (courses, onProgress = null) => {
         errors: [],
     };
 
-    const total = courses.length;
+    // Only process courses that need changes
+    const coursesToProcess = [];
+
+    // Add missing courses (need to be created)
+    if (analysis.missingCourses && analysis.missingCourses.length > 0) {
+        coursesToProcess.push(...analysis.missingCourses);
+    }
+
+    // Add courses with name mismatches (need to be updated)
+    if (analysis.nameConflicts && analysis.nameConflicts.length > 0) {
+        coursesToProcess.push(
+            ...analysis.nameConflicts.map((conflict) => ({
+                code: conflict.code,
+                name: conflict.csvName,
+            }))
+        );
+    }
+
+    const total = coursesToProcess.length;
     let processed = 0;
 
-    for (const course of courses) {
-        try {
-            // First try to create the course
-            const createResponse = await createCourse(course.code, course.name);
+    if (total === 0) {
+        // No courses need processing
+        if (onProgress) {
+            onProgress(0, 0);
+        }
+        return results;
+    }
 
-            if (createResponse.message === "Course created successfully") {
-                results.created.push(course);
-            } else if (createResponse.message === "Course already exists") {
-                // Course exists, check if name needs updating
+    for (const course of coursesToProcess) {
+        try {
+            // Check if this is a missing course (needs creation) or existing course (needs update)
+            const isMissingCourse =
+                analysis.missingCourses &&
+                analysis.missingCourses.some((c) => c.code === course.code);
+
+            if (isMissingCourse) {
+                // Create new course
+                const createResponse = await createCourse(course.code, course.name);
+                if (createResponse.message === "Course created successfully") {
+                    results.created.push(course);
+                } else {
+                    results.errors.push({ course, error: "Failed to create course" });
+                }
+            } else {
+                // Update existing course name
                 const updateResponse = await updateCourseName(course.code, course.name);
                 if (updateResponse && updateResponse.code) {
                     results.updated.push(course);
                 } else {
-                    results.skipped.push(course);
+                    results.errors.push({ course, error: "Failed to update course name" });
                 }
             }
         } catch (error) {
