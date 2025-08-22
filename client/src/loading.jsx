@@ -59,6 +59,7 @@ const LoadingPage = () => {
             </div>
             <div className="mt-10 text-center">
                 <h2>Fetching your courses</h2>
+                <h2>This may take upto a minute</h2>
             </div>
         </div>
     );

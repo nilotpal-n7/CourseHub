@@ -96,7 +96,7 @@ const AddCourseModal = ({ handleAddCourse }) => {
                 </form>
                 {err === null ? (
                     loading ? (
-                        <SmallLoader text="Loading your courses... This could take a minute." />
+                        <SmallLoader text="Loading your courses..." />
                     ) : (
                         (() => {
                             const filtered = results.filter(
