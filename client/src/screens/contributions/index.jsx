@@ -149,7 +149,7 @@ const Contributions = () => {
                     )}
                 </div>
                 <div className={`button ${submitEnabled && !isUploading}`} onClick={handleSubmit}>
-                    {isUploading ? "SUBMIT" : "SUBMIT"}
+                    {isUploading ? "UPLOADING..." : "SUBMIT"}
                 </div>
             </Wrapper>
         </SectionC>
