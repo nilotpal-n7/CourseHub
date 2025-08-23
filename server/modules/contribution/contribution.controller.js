@@ -51,33 +51,44 @@ async function GetAllContributions(req, res, next) {
 async function HandleFileUpload(req, res, next) {
     console.log("Handling File Upload");
     const contributionId = req.headers["contribution-id"];
-    // console.log(req.headers.username);
-    const file = req.file;
+    const files = req.files; // Changed from req.file to req.files for array handling
 
-    // Files names
-    let initialPath = file.path;
-    let newFilename = file.filename;
-    let originalFilename = file.originalname;
-
-    let wordArr = originalFilename.split(".");
-    let fileExtension = wordArr[wordArr.length - 1];
-    let finalFileName = "";
-
-    for (let i = 0; i < wordArr.length - 1; i++) {
-        finalFileName += wordArr[i];
+    // Check if files were uploaded
+    if (!files || files.length === 0) {
+        return res.status(400).json({ error: "No files were uploaded" });
     }
-    finalFileName += "~" + req.headers.username;
-    finalFileName += "." + fileExtension;
 
-    const finalPath = initialPath.slice(0, initialPath.indexOf(newFilename));
+    // Handle multiple files
+    const uploadedFiles = [];
 
-    await fs.promises.rename(finalPath + newFilename, finalPath + finalFileName);
-    const fileId = await UploadFile(contributionId, finalPath, finalFileName);
-    if (fileId) {
-        await HandleFileToDB(contributionId, fileId);
+    for (const file of files) {
+        // Files names
+        let initialPath = file.path;
+        let newFilename = file.filename;
+        let originalFilename = file.originalname;
+
+        let wordArr = originalFilename.split(".");
+        let fileExtension = wordArr[wordArr.length - 1];
+        let finalFileName = "";
+
+        for (let i = 0; i < wordArr.length - 1; i++) {
+            finalFileName += wordArr[i];
+        }
+        finalFileName += "~" + req.headers.username;
+        finalFileName += "." + fileExtension;
+
+        const finalPath = initialPath.slice(0, initialPath.indexOf(newFilename));
+
+        await fs.promises.rename(finalPath + newFilename, finalPath + finalFileName);
+        const fileId = await UploadFile(contributionId, finalPath, finalFileName);
+        if (fileId) {
+            await HandleFileToDB(contributionId, fileId);
+            uploadedFiles.push({ fileId, originalName: originalFilename });
+        }
+        await fs.promises.unlink(finalPath + finalFileName);
     }
-    await fs.promises.unlink(finalPath + finalFileName);
-    return res.json({ file });
+
+    return res.json({ files: uploadedFiles, count: uploadedFiles.length });
 }
 
 async function CreateNewContribution(req, res, next) {
@@ -105,7 +116,9 @@ async function CreateNewContribution(req, res, next) {
 }
 
 async function GetMyContributions(req, res, next) {
-    const myContributions = await Contribution.find({ uploadedBy: req.user._id }).populate({path: 'files'});
+    const myContributions = await Contribution.find({ uploadedBy: req.user._id }).populate({
+        path: "files",
+    });
     res.json(myContributions);
 }
 
