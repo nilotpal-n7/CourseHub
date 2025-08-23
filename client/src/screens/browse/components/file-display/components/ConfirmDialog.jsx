@@ -120,7 +120,7 @@ const ConfirmDialog = ({ isOpen, type, onConfirm, onCancel, isLoading = false })
 
     const getButtonText = () => {
         if (isLoading) {
-            return isDelete ? "Delete" : "Verify";
+            return isDelete ? "Deleting..." : "Verifying...";
         }
         return isDelete ? "Delete" : "Verify";
     };
