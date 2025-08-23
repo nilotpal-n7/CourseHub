@@ -32,6 +32,7 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
     const [showDialog, setShowDialog] = useState(false);
     const [dialogType, setDialogType] = useState("verify");
     const [onConfirmAction, setOnConfirmAction] = useState(() => () => {});
+    const [isProcessing, setIsProcessing] = useState(false);
 
     let name = file.name;
     let _dispName = formatFileName(name);
@@ -132,7 +133,10 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
         //   if (!confirmAction) return;
         setDialogType("verify");
         setOnConfirmAction(() => async () => {
+            if (isProcessing) return;
+
             try {
+                setIsProcessing(true);
                 // console.log("Verifying file:", file._id);
                 await verifyFile(file._id);
                 toast.success("File verified!");
@@ -147,6 +151,7 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
                 console.error("Error verifying:", err);
                 toast.error("Failed to verify file.");
             } finally {
+                setIsProcessing(false);
                 setShowDialog(false);
             }
         });
@@ -158,7 +163,10 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
         //   if (!confirmAction) return;
         setDialogType("delete");
         setOnConfirmAction(() => async () => {
+            if (isProcessing) return;
+
             try {
+                setIsProcessing(true);
                 //// console.log("Deleting file:", file._id);
                 await unverifyFile(file._id, file.fileId, currFolderId);
                 toast.success("File deleted!");
@@ -173,6 +181,7 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
                 console.error("Error deleting:", err);
                 toast.error("Failed to delete file.");
             } finally {
+                setIsProcessing(false);
                 setShowDialog(false);
             }
         });
@@ -258,6 +267,7 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
                     type={dialogType}
                     onConfirm={onConfirmAction}
                     onCancel={() => setShowDialog(false)}
+                    isLoading={isProcessing}
                 />
             )}
         </div>

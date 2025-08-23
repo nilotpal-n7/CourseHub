@@ -5,7 +5,7 @@ const Loader = ({ text = "Loading..." }) => {
     return (
         <div className="loader-container">
             <div className="loader-animation">
-                <div className="jimu-primary-loading"></div>
+                <div className="golden-circular-loader"></div>
             </div>
             <div className="loader-text">
                 <p>{text}</p>
