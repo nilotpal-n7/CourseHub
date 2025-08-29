@@ -38,7 +38,7 @@ const YearInfo = ({
     };
 
     if (course?.length > 1) course.sort(sortYear);
-  
+
     const handleAddYear = () => {
         setNewYearName("");
         setShowConfirm(true);
@@ -137,7 +137,7 @@ const YearInfo = ({
                                         }}
                                     >
                                         {year.name}
-                                        {isBR ? (
+                                        {isBR && !isReadOnlyCourse ? (
                                             <div
                                                 className="delete"
                                                 onClick={handleDeleteYear}
@@ -145,12 +145,14 @@ const YearInfo = ({
                                             ></div>
                                         ) : null}
                                     </span>
-                                    <ConfirmDelDialog
-                                        isOpen={showConfirmDel}
-                                        type="delete"
-                                        onConfirm={handleConfirmDeleteYear}
-                                        onCancel={cancelDelete}
-                                    />
+                                    {isBR && !isReadOnlyCourse ? (
+                                        <ConfirmDelDialog
+                                            isOpen={showConfirmDel}
+                                            type="delete"
+                                            onConfirm={handleConfirmDeleteYear}
+                                            onCancel={cancelDelete}
+                                        />
+                                    ) : null}
                                 </div>
                             );
                         })}
