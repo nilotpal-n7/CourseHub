@@ -1,42 +1,121 @@
-.microsoft-signin-btn{
+.microsoft-signin-btn {
     width: 280px;
     height: 50px;
     color: #fff;
     background-color: #000;
-    display: inline-block;
     padding: 15px 30px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 5px;
-    .logo{
+    border-radius: 8px;
+    border: none;
+    font-family: inherit;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    .logo {
         background: url(./logo.svg), none;
         background-repeat: no-repeat;
         background-position: center;
         width: 35px;
         height: 35px;
     }
-    span{
+    span {
         display: block;
         margin-left: 10px;
-        font-family: 'Bold';
+        font-family: "Bold";
         font-size: 1rem;
+        font-weight: 600;
     }
     cursor: pointer;
-    transition: 200ms ease;
-    &:hover{
-        transform: scale(1.02);
+    transition: all 0.2s ease;
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        background-color: #1a1a1a;
     }
+
+    // Improve touch targets for mobile
+    &:active {
+        transform: scale(0.97);
+        background-color: #2a2a2a;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    // Focus state for accessibility
+    &:focus {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+    }
+
+    // Prevent text selection on mobile
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    // Improve touch response
+    -webkit-tap-highlight-color: transparent;
+
+    // Minimum touch target size for accessibility
+    min-height: 44px;
     @media screen and (max-width: 750px) {
-        width: 200px;
-        height: 40px;
-        padding: 5px;
-        .logo{
+        width: 220px;
+        height: 44px;
+        padding: 12px 20px;
+        .logo {
+            width: 22px;
+            height: 22px;
+        }
+        span {
+            font-size: 0.85rem;
+        }
+    }
+    @media screen and (max-width: 480px) {
+        width: 100%;
+        max-width: 270px;
+        height: 44px;
+        padding: 12px 20px;
+        margin: 0;
+        border-radius: 10px;
+        font-size: 14px;
+        background-color: #1a1a1a;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+        border: 2px solid transparent;
+        .logo {
             width: 20px;
             height: 20px;
         }
-        span{
-            font-size: 0.8rem;
+        span {
+            font-size: 0.9rem;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        &:hover {
+            background-color: #2a2a2a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+        &:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+    }
+    @media screen and (max-width: 360px) {
+        width: 100%;
+        max-width: 250px;
+        height: 42px;
+        padding: 10px 18px;
+        margin: 0;
+        border-radius: 8px;
+        .logo {
+            width: 18px;
+            height: 18px;
+        }
+        span {
+            font-size: 0.85rem;
+            margin-left: 8px;
+            font-weight: 600;
         }
     }
 }

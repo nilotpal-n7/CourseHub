@@ -1,5 +1,6 @@
 import "./styles.scss";
 import Button from "./Buttons";
+import { toast } from "react-toastify";
 import date from "date-and-time";
 import { verifyFile,unverifyFile } from "../../../../../api/File";
 
@@ -9,6 +10,7 @@ export default function ContributionCard(props) {
             console.log("Verifying file:", props.id);
             await verifyFile(props.id);
             toast.success("File verified!");
+            location.reload();
 
             // Instead of reload:
         } catch (err) {
@@ -17,11 +19,11 @@ export default function ContributionCard(props) {
         };
     };
 
-    const handleUnverify = () => {
+    const handleUnverify = async () => {
             try {
-                await unverifyFile(props.id, props.onedriveId, currFolderId);
+                await unverifyFile(props.id, props.onedriveId, props.parentFolder);
                 toast.success("File deleted!");
-                const { data } = await getCourse(currCourseCode);
+                location.reload();
             } catch (err) {
                 console.error("Error deleting:", err);
                 toast.error("Failed to delete file.");
@@ -52,7 +54,8 @@ export default function ContributionCard(props) {
                                     onClick={handleVerify} />
                             </div>
                             <div className="btn delete">
-                                <Button text="DELETE" />
+                                <Button text="DELETE" 
+                                    onClick={handleUnverify}/>
                             </div>
                         </div>
                     ) :

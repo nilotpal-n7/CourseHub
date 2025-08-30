@@ -64,6 +64,15 @@ export const getCourse = async (req, res, next) => {
     if (!course) {
         course = await createCourse(code);
     }
+
+    //function to sort the years in descending order for displaying in frontend
+    const sortYear = (a, b) => {
+        if (a?.name > b?.name) return 1;
+        else if(a?.name < b?.name) return -1;
+        else return 1;
+    }
+
+    if(course?.children.length > 1) course.children.sort(sortYear);
     return res.json({ found: true, ...course["_doc"] });
 };
 

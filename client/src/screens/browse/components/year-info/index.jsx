@@ -31,6 +31,14 @@ const YearInfo = ({
         (c) => c.code.toLowerCase() === courseCode?.toLowerCase()
     );
 
+    const sortYear = (a, b) => {
+        if (a?.name > b?.name) return 1;
+        else if (a?.name < b?.name) return -1;
+        else return 1;
+    };
+
+    if (course?.length > 1) course.sort(sortYear);
+
     const handleAddYear = () => {
         setNewYearName("");
         setShowConfirm(true);
@@ -76,7 +84,7 @@ const YearInfo = ({
 
             toast.success(`Year "${yearName}" added`);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             toast.error("Failed to add year.");
         }
         setShowConfirm(false);
@@ -100,7 +108,7 @@ const YearInfo = ({
 
             toast.success("Year deleted successfully!");
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             toast.error("Failed to delete year.");
         }
         setShowConfirmDel(false);
@@ -117,7 +125,7 @@ const YearInfo = ({
                     {course &&
                         course.map((year, idx) => {
                             return (
-                                <div>
+                                <div key={year?._id}>
                                     <span
                                         className={`year ${currYear === idx ? "selected" : ""}`}
                                         onClick={() => {
@@ -127,10 +135,9 @@ const YearInfo = ({
                                             dispatch(ChangeFolder(course[idx]));
                                             dispatch(RefreshCurrentFolder());
                                         }}
-                                        key={idx}
                                     >
                                         {year.name}
-                                        {isBR ? (
+                                        {isBR && !isReadOnlyCourse ? (
                                             <div
                                                 className="delete"
                                                 onClick={handleDeleteYear}
@@ -138,12 +145,14 @@ const YearInfo = ({
                                             ></div>
                                         ) : null}
                                     </span>
-                                    <ConfirmDelDialog
-                                        isOpen={showConfirmDel}
-                                        type="delete"
-                                        onConfirm={handleConfirmDeleteYear}
-                                        onCancel={cancelDelete}
-                                    />
+                                    {isBR && !isReadOnlyCourse ? (
+                                        <ConfirmDelDialog
+                                            isOpen={showConfirmDel}
+                                            type="delete"
+                                            onConfirm={handleConfirmDeleteYear}
+                                            onCancel={cancelDelete}
+                                        />
+                                    ) : null}
                                 </div>
                             );
                         })}

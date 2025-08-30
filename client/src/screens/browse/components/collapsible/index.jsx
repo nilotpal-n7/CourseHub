@@ -3,11 +3,20 @@ import Folder from "./components/folder";
 import FolderController from "./components/folder-controller";
 import "./styles.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { ChangeCurrentYearData, UpdateCourses } from "../../../../actions/filebrowser_actions";
-import { ChangeFolder, ChangeCurrentCourse } from "../../../../actions/filebrowser_actions";
+import {
+    ChangeCurrentYearData,
+    UpdateCourses,
+    ChangeCurrentCourse,
+} from "../../../../actions/filebrowser_actions";
+import {
+    ChangeFolder,
+    PushFolderHistory,
+    ClearFolderHistory,
+} from "../../../../actions/filebrowser_actions";
 import { getCourse } from "../../../../api/Course";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import SmallLoader from "../../../../components/SmallLoader";
 import searchFolderById from "../../../../utils/searchFolderById";
 import { toast } from "react-toastify";
 import { capitalise } from "../../../../utils/capitalise";
@@ -24,6 +33,7 @@ const Collapsible = ({ course, color, state }) => {
     const currentCourse = useSelector((state) => state.fileBrowser.currentCourse);
     const allCourseData = useSelector((state) => state.fileBrowser.allCourseData);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const onClick = () => {
         if (!open) triggerGetCourse();
@@ -39,7 +49,7 @@ const Collapsible = ({ course, color, state }) => {
         try {
             const allLocal = JSON.parse(sessionStorage.getItem("AllCourses"));
             insessionStorage = allLocal?.find(
-                (course) => course.code.toLowerCase() === code.toLowerCase().replaceAll(" ","")
+                (course) => course.code.toLowerCase() === code.toLowerCase().replaceAll(" ", "")
             );
         } catch (error) {
             sessionStorage.removeItem("AllCourses");
@@ -47,7 +57,7 @@ const Collapsible = ({ course, color, state }) => {
         }
         try {
             currCourse = allCourseData.find(
-                (course) => course.code.toLowerCase() === code.toLowerCase().replaceAll(" ","")
+                (course) => course.code.toLowerCase() === code.toLowerCase().replaceAll(" ", "")
             );
         } catch (error) {
             sessionStorage.removeItem("AllCourses");
@@ -96,7 +106,14 @@ const Collapsible = ({ course, color, state }) => {
                     toast.error("Course data could not be loaded.");
                     return;
                 }
+
+                const courseCode = course.code.replaceAll(" ", "").toUpperCase();
+
                 dispatch(ChangeCurrentCourse(fetched.children, fetched.code));
+
+                // Navigate to the course URL (consistent with mobile dropdown)
+                navigate(`/browse/${courseCode}`);
+
                 const yearIndex = fetched.children.length - 1;
                 const yearFolder = fetched.children?.[yearIndex];
 
@@ -110,11 +127,12 @@ const Collapsible = ({ course, color, state }) => {
                 const yearChildren = Array.isArray(yearFolder.children) ? yearFolder.children : [];
 
                 dispatch(ChangeCurrentYearData(yearIndex, yearChildren));
+                dispatch(ClearFolderHistory()); // Clear history when selecting a new course from collapsible
                 dispatch(ChangeFolder(yearFolder));
-                
+
                 setInitial(false);
             } catch (error) {
-                console.error( error);
+                console.error(error);
                 toast.error("Something went wrong while loading the course.");
             }
         };
@@ -122,14 +140,15 @@ const Collapsible = ({ course, color, state }) => {
         run();
     };
 
-
-    let courseCode=course.code.replaceAll(" ", "")
+    let courseCode = course.code.replaceAll(" ", "");
     useEffect(() => {
         // console.log(currCourseCode);
         // console.log(course);
-        if (currCourseCode?.toLowerCase() !== courseCode?.toLowerCase()){setOpen(false);}
+        if (currCourseCode?.toLowerCase() !== courseCode?.toLowerCase()) {
+            setOpen(false);
+        }
         if (currCourseCode?.toLowerCase() === courseCode?.toLowerCase()) {
-            //console.log("called");
+            //// console.log("called");
             triggerGetCourse();
             setOpen(true);
         }
@@ -155,7 +174,7 @@ const Collapsible = ({ course, color, state }) => {
                     dispatch(ChangeFolder(searchedFolder));
                 }
             } catch (error) {
-                console.log(error);
+                // console.log(error);
             }
         }
     }, [initial, currentCourse]);
@@ -168,16 +187,14 @@ const Collapsible = ({ course, color, state }) => {
                     <div className="text">
                         <p className="code">{course.code ? course.code.toUpperCase() : "CL 301"}</p>
                         <p className="name">
-                            {course.name
-                                ? capitalise(course.name)
-                                : "Name Unavailable"}
+                            {course.name ? capitalise(course.name) : "Name Unavailable"}
                         </p>
                     </div>
                     <div className="arrow"></div>
                 </div>
             </div>
             <div className="collapsible-content">
-                {loading && "loading..."}
+                {loading && <SmallLoader text="Loading course..." />}
                 {error && "error"}
                 {notFound && "course not added yet"}
                 {!loading &&

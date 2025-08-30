@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { GetSearchResult } from "../../../../api/Search";
 import Result from "./components/result";
+import SmallLoader from "../../../../components/SmallLoader";
 const AddCourseModal = ({ handleAddCourse }) => {
     const [code, setCode] = useState("");
     const [btnState, setBtnState] = useState("disabled");
@@ -25,7 +26,7 @@ const AddCourseModal = ({ handleAddCourse }) => {
     );
 
     useEffect(() => {
-        if (code.length > 2) {
+        if (code.length >= 1) {
             if (btnState !== "") setBtnState("");
         } else {
             if (btnState !== "disabled") setBtnState("disabled");
@@ -73,11 +74,13 @@ const AddCourseModal = ({ handleAddCourse }) => {
             <Wrapper>
                 <div className="head">Add New Course</div>
                 <div className="info-message">This course will be read only</div>
-                <div className="info-message.secondary">No space between course code, for e.g- CS101</div>
+                <div className="info-message.secondary">
+                    You can either type the course code or any keyword in the name of the course
+                </div>
                 <form onSubmit={(e) => e.preventDefault()}>
-                    <div className="course">
+                    <div className="course" style={{marginTop: "1.5rem"}}>
                         <label htmlFor="course" className="label_course">
-                            COURSE CODE :
+                            KEYWORD :
                         </label>
                         <input
                             placeholder="Course Code"
@@ -87,35 +90,48 @@ const AddCourseModal = ({ handleAddCourse }) => {
                                 setCode(e.target.value);
                                 if (results.length > 0) setResults([]);
                             }}
+                            onKeyDown={(e)=>{
+                                if (e.key == "Enter"){
+                                    handleSearch();
+                                }
+                            }}
                             value={code}
                         ></input>
                     </div>
                 </form>
-                {err === null
-                    ? loading
-                        ? "Loading courses..."
-                        : (() => {
-                              const filtered = results.filter(
-                                  (course) =>
-                                      !allUserCourseCodes.includes(
-                                          course.code?.replace(/\s+/g, "").toLowerCase()
-                                      )
-                              );
-                              if (results.length > 0 && filtered.length === 0) {
-                                  return "Course already exists";
-                              }
-                              return filtered.map((course) => (
-                                  <Result
-                                      key={course._id}
-                                      _id={course._id}
-                                      code={course.code}
-                                      name={course.name}
-                                      handleClick={handleAddCourse}
-                                      handleModalClose={handleModalClose}
-                                  />
-                              ));
-                          })()
-                    : err}
+                {err === null ? (
+                    loading ? (
+                        <SmallLoader text="Loading your courses..." />
+                    ) : (
+                        (() => {
+                            const filtered = results.filter(
+                                (course) =>
+                                    !allUserCourseCodes.includes(
+                                        course.code?.replace(/\s+/g, "").toLowerCase()
+                                    )
+                            );
+                            if (results.length > 0 && filtered.length === 0) {
+                                return "Course already exists";
+                            }
+                            return (
+                                <div className="add-course-scroll">
+                                    {filtered.map((course) => (
+                                    <Result
+                                        key={course._id}
+                                        _id={course._id}
+                                        code={course.code}
+                                        name={course.name}
+                                        handleClick={handleAddCourse}
+                                        handleModalClose={handleModalClose}
+                                    />
+                                    ))}
+                                </div>
+                            )
+                        })()
+                    )
+                ) : (
+                    err
+                )}
                 <Space amount={35} />
 
                 <div className={`button ${btnState}`} onClick={handleSearch}>

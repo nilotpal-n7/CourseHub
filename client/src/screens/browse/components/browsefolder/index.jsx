@@ -1,16 +1,31 @@
 import "./styles.scss";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { getCourse } from "../../../../api/Course";
 import { useDispatch } from "react-redux";
-import { ChangeFolder } from "../../../../actions/filebrowser_actions";
-import { deleteFolder } from "../../../../api/Folder";
+import { ChangeFolder, PushFolderHistory } from "../../../../actions/filebrowser_actions";
+import { deleteFolder, renameFolder } from "../../../../api/Folder";
 import { toast } from "react-toastify";
-import { RefreshCurrentFolder, UpdateCourses, ChangeCurrentYearData } from "../../../../actions/filebrowser_actions";
+import {
+    RefreshCurrentFolder,
+    UpdateCourses,
+    ChangeCurrentYearData,
+} from "../../../../actions/filebrowser_actions";
 import { ConfirmDialog } from "./confirmDialog";
-const BrowseFolder = ({ type = "file", color, path, name, subject, folderData, parentFolder }) => {
+import { FolderRename } from "./folderRename.jsx";
+const BrowseFolder = ({
+    type = "file",
+    color,
+    path,
+    name,
+    subject,
+    folderData,
+    parentFolder,
+    isMobileView = false,
+}) => {
     const dispatch = useDispatch();
     const currYear = useSelector((state) => state.fileBrowser.currentYear);
+    const currentFolder = useSelector((state) => state.fileBrowser.currentFolder);
     const isBR = useSelector((state) => state.user.user.isBR);
     const [showConfirm, setShowConfirm] = useState(false);
     const user = useSelector((state) => state.user.user);
@@ -19,8 +34,28 @@ const BrowseFolder = ({ type = "file", color, path, name, subject, folderData, p
         (c) => c.code.toLowerCase() === courseCode?.toLowerCase()
     );
 
+    const [isEditing, setIsEditing] = useState(false);
+    const renameRef = useRef();
+
+    const setFolderName = async (newName) => {
+        try {
+            await renameFolder(folderData._id, newName);
+            toast.success("Folder renamed successfully!");
+            const { data } = await getCourse(folderData?.course);
+            dispatch(RefreshCurrentFolder());
+            dispatch(UpdateCourses(data));
+            dispatch(ChangeCurrentYearData(currYear, data.children[currYear].children));
+        } catch (err) {
+            // console.log(err);
+            toast.error("Failed to rename folder");
+        }
+    };
+
     const onClick = (folderData) => {
-        // return;
+        // Push current folder to history before navigating
+        if (currentFolder) {
+            dispatch(PushFolderHistory(currentFolder));
+        }
         dispatch(ChangeFolder(folderData));
     };
 
@@ -28,12 +63,12 @@ const BrowseFolder = ({ type = "file", color, path, name, subject, folderData, p
         try {
             await deleteFolder({ folder: folderData, parentFolderId: parentFolder._id });
             toast.success("Folder deleted successfully!");
-            const {data} = await getCourse(folderData?.course);
+            const { data } = await getCourse(folderData?.course);
             dispatch(RefreshCurrentFolder());
             dispatch(UpdateCourses(data));
             dispatch(ChangeCurrentYearData(currYear, data.children[currYear].children));
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             toast.error("Failed to delete folder.");
         }
         setShowConfirm(false);
@@ -126,8 +161,30 @@ const BrowseFolder = ({ type = "file", color, path, name, subject, folderData, p
                 <div className="content">
                     <div className="top">
                         <p className="path">{""}</p>
-                        <p className="name">{name ? name : "Name"}</p>
-                        {isBR && !isReadOnlyCourse && (
+                        {!isEditing ? (
+                            <span className="name">
+                                {name ? name : "Name"}
+                                {!isMobileView && isBR && !isReadOnlyCourse && (
+                                    <div
+                                        className="rename-tick"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setIsEditing(true);
+                                        }}
+                                    ></div>
+                                )}
+                            </span>
+                        ) : (
+                            <FolderRename
+                                initialName={name}
+                                onCancel={() => setIsEditing(false)}
+                                onSave={(newName) => {
+                                    setFolderName(newName);
+                                    setIsEditing(false);
+                                }}
+                            />
+                        )}
+                        {!isMobileView && isBR && !isReadOnlyCourse && (
                             <span
                                 className="delete"
                                 onClick={(e) => {
@@ -145,7 +202,7 @@ const BrowseFolder = ({ type = "file", color, path, name, subject, folderData, p
                     </div>
                 </div>
             </div>
-            {isBR && !isReadOnlyCourse && (
+            {!isMobileView && isBR && !isReadOnlyCourse && (
                 <ConfirmDialog
                     isOpen={showConfirm}
                     type="delete"

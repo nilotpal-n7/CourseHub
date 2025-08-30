@@ -58,7 +58,7 @@ const Dashboard = () => {
             await AddNewCourseAPI(code, name);
             location.reload();
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
         // dispatch(
         //     AddNewCourseLocal({
@@ -78,7 +78,7 @@ const Dashboard = () => {
                 dispatch(LoadCourses(JSON.parse(sessionStorage.getItem("AllCourses"))));
             } catch (error) {
                 dispatch(LoadCourses([]));
-                console.log("load error");
+                // console.log("load error");
             }
         }
     }, []);
@@ -97,7 +97,7 @@ const Dashboard = () => {
                 const daysEndSem = parseInt((endSemDate.getTime() - now) / (1000 * 3600 * 24));
                 setEndSem(daysEndSem);
             } catch (error) {
-                console.log(error);
+                // console.log(error);
             }
         }
         run();
@@ -106,7 +106,7 @@ const Dashboard = () => {
     const handleClick = (code) => {
         let Code = code.replaceAll(" ", "");
         dispatch(ChangeCurrentCourse(null, Code.toUpperCase()));
-        navigate("/browse");
+        navigate(`/browse/${Code.toUpperCase()}`);
     };
     // console.log(user);
 
@@ -123,7 +123,7 @@ const Dashboard = () => {
                 <Container color={"dark"}>
                     <Space amount={20} />
                     <div className="split">
-                        <div>
+                        <div className="welcome-container">
                             <Heading text={"Welcome,"} type={""} color={"light"} />
                             <Heading
                                 text={formatName(user?.user?.name)}
@@ -275,7 +275,7 @@ const Dashboard = () => {
                 <ContributionBanner contributionHandler={contributionHandler} />
                 <Space amount={50} />
                 <Container>
-                    <SubHeading text={"MY FAVOURITES"} type={"bold"} />
+                    <SubHeading text={"MY FAVOURITES"} type={"bold"} algn={"center"} />
                     <div className="fav-container">
                         {user?.favourites?.length > 0 ? (
                             user.favourites.map((favourite) => (

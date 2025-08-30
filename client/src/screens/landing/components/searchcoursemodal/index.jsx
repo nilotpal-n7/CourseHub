@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { GetSearchResult } from "../../../../api/Search";
 import Result from "./components/result";
+import SmallLoader from "../../../../components/SmallLoader";
 const SearchCourseModal = ({ handleAddCourse }) => {
     const [code, setCode] = useState("");
     const [btnState, setBtnState] = useState("disabled");
@@ -71,21 +72,25 @@ const SearchCourseModal = ({ handleAddCourse }) => {
                         ></input>
                     </div>
                 </form>
-                {err === null
-                    ? loading
-                        ? "Loading courses..."
-                        : results.map((course) => (
-                              <Result
-                                  key={course._id}
-                                  _id={course._id}
-                                  code={course.code}
-                                  name={course.name}
-                                  handleClick={handleAddCourse}
-                                  handleModalClose={handleModalClose}
-                                  isAvailable={course.isAvailable}
-                              />
-                          ))
-                    : err}
+                {err === null ? (
+                    loading ? (
+                        <SmallLoader text="Loading courses..." />
+                    ) : (
+                        results.map((course) => (
+                            <Result
+                                key={course._id}
+                                _id={course._id}
+                                code={course.code}
+                                name={course.name}
+                                handleClick={handleAddCourse}
+                                handleModalClose={handleModalClose}
+                                isAvailable={course.isAvailable}
+                            />
+                        ))
+                    )
+                ) : (
+                    err
+                )}
                 <Space amount={35} />
 
                 <div className={`button ${btnState}`} onClick={handleSearch}>

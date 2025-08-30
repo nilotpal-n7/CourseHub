@@ -51,17 +51,17 @@ export const getThumbnail = async (fileId) => {
     const resp = await axios.post(`${serverRoot}/api/file/thumbnail`, {
         fileId: fileId,
     });
-    console.log("Thumbnail Refreshed");
+    // console.log("Thumbnail Refreshed");
 };
 
 export const getFileDownloadLink = async (fileId) => {
-    const response = await fetch( serverRoot + '/api/files/download',{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ url: fileId }),
-            })
+    const response = await fetch(serverRoot + "/api/files/download", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url: fileId }),
+    });
 
     if (!response.ok) {
         throw new Error(`Error fetching download link: ${response.statusText}`);
@@ -70,5 +70,3 @@ export const getFileDownloadLink = async (fileId) => {
     const data = await response.json();
     return data.downloadLink;
 };
-
-

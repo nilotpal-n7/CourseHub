@@ -6,25 +6,33 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { UpdateFavourites } from "../../../../actions/user_actions";
 import { getCourse } from "../../../../api/Course.js";
-import { RefreshCurrentFolder, UpdateCourses, ChangeCurrentYearData } from "../../../../actions/filebrowser_actions.js";
+import {
+    RefreshCurrentFolder,
+    UpdateCourses,
+    ChangeCurrentYearData,
+} from "../../../../actions/filebrowser_actions.js";
 import { downloadFile, previewFile, getThumbnail } from "../../../../api/File";
 import clientRoot from "../../../../api/server";
 import capitalise from "../../../../utils/capitalise.js";
 import Share from "../../../share";
 import { verifyFile, unverifyFile } from "../../../../api/File";
-import { RemoveFileFromFolder, UpdateFileVerificationStatus } from "../../../../actions/filebrowser_actions.js";
+import {
+    RemoveFileFromFolder,
+    UpdateFileVerificationStatus,
+} from "../../../../actions/filebrowser_actions.js";
 import ConfirmDialog from "./components/ConfirmDialog.jsx";
 import { getFileDownloadLink } from "../../../../api/File";
 import server from "../../../../api/server.js";
 
-const FileDisplay = ({ file, path, code }) => {
+const FileDisplay = ({ file, path, code, isMobileView = false }) => {
     const user = useSelector((state) => state.user?.user);
     const currYear = useSelector((state) => state.fileBrowser.currentYear);
     const fileSize = formatFileSize(file.size);
     const fileType = formatFileType(file.name);
     const [showDialog, setShowDialog] = useState(false);
     const [dialogType, setDialogType] = useState("verify");
-    const [onConfirmAction, setOnConfirmAction] = useState(() => () => { });
+    const [onConfirmAction, setOnConfirmAction] = useState(() => () => {});
+    const [isProcessing, setIsProcessing] = useState(false);
 
     let name = file.name;
     let _dispName = formatFileName(name);
@@ -125,9 +133,11 @@ const FileDisplay = ({ file, path, code }) => {
         //   if (!confirmAction) return;
         setDialogType("verify");
         setOnConfirmAction(() => async () => {
+            if (isProcessing) return;
 
             try {
-                console.log("Verifying file:", file._id);
+                setIsProcessing(true);
+                // console.log("Verifying file:", file._id);
                 await verifyFile(file._id);
                 toast.success("File verified!");
                 dispatch(UpdateFileVerificationStatus(file._id, true));
@@ -141,6 +151,7 @@ const FileDisplay = ({ file, path, code }) => {
                 console.error("Error verifying:", err);
                 toast.error("Failed to verify file.");
             } finally {
+                setIsProcessing(false);
                 setShowDialog(false);
             }
         });
@@ -152,8 +163,11 @@ const FileDisplay = ({ file, path, code }) => {
         //   if (!confirmAction) return;
         setDialogType("delete");
         setOnConfirmAction(() => async () => {
+            if (isProcessing) return;
+
             try {
-                //console.log("Deleting file:", file._id);
+                setIsProcessing(true);
+                //// console.log("Deleting file:", file._id);
                 await unverifyFile(file._id, file.fileId, currFolderId);
                 toast.success("File deleted!");
                 // window.location.reload();
@@ -167,15 +181,19 @@ const FileDisplay = ({ file, path, code }) => {
                 console.error("Error deleting:", err);
                 toast.error("Failed to delete file.");
             } finally {
+                setIsProcessing(false);
                 setShowDialog(false);
             }
         });
         setShowDialog(true);
     };
 
-
     return (
-        <div className={`file-display ${user?.isBR ? (file.isVerified ? "verified" : "unverified") : ""}`}>
+        <div
+            className={`file-display ${
+                user?.isBR ? (file.isVerified ? "verified" : "unverified") : ""
+            }`}
+        >
             <img
                 src={file.thumbnail}
                 style={{ display: "none" }}
@@ -198,10 +216,22 @@ const FileDisplay = ({ file, path, code }) => {
                 }}
             >
                 <div className="top">
-                    {user?.isBR && !isReadOnlyCourse && (
+                    {!isMobileView && user?.isBR && !isReadOnlyCourse && (
                         <>
-                        {!(file.isVerified)? <span className="verify" onClick={handleVerify} title="Verify"></span> : <></>}
-                            <span className="unverify" onClick={handleUnverify} title="Delete"></span>
+                            {!file.isVerified ? (
+                                <span
+                                    className="verify"
+                                    onClick={handleVerify}
+                                    title="Verify"
+                                ></span>
+                            ) : (
+                                <></>
+                            )}
+                            <span
+                                className="unverify"
+                                onClick={handleUnverify}
+                                title="Delete"
+                            ></span>
                         </>
                     )}
                     {/* <span className="share" onClick={handleShare}></span> */}
@@ -231,13 +261,15 @@ const FileDisplay = ({ file, path, code }) => {
                 </div>
             </div>
             <Share link={`${clientRoot}/browse/${currCourseCode.toLowerCase()}/${currFolderId}`} />
-            <ConfirmDialog
-                isOpen={showDialog}
-                type={dialogType}
-                onConfirm={onConfirmAction}
-                onCancel={() => setShowDialog(false)}
-            />
-
+            {!isMobileView && (
+                <ConfirmDialog
+                    isOpen={showDialog}
+                    type={dialogType}
+                    onConfirm={onConfirmAction}
+                    onCancel={() => setShowDialog(false)}
+                    isLoading={isProcessing}
+                />
+            )}
         </div>
     );
 };

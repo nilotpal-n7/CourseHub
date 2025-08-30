@@ -29,6 +29,7 @@ const FolderInfo = ({
     contributionHandler,
     folderId,
     courseCode,
+    isMobileView = false, // New prop for mobile view
 }) => {
     const dispatch = useDispatch();
     const currYear = useSelector((state) => state.fileBrowser.currentYear);
@@ -37,6 +38,7 @@ const FolderInfo = ({
     const [newFolderName, setNewFolderName] = useState("");
     const [childType, setChildType] = useState("File");
     const [isAdding, setIsAdding] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
 
     const user = useSelector((state) => state.user.user);
     const isReadOnlyCourse = user?.readOnly?.some(
@@ -99,7 +101,7 @@ const FolderInfo = ({
             dispatch(RefreshCurrentFolder());
             toast.success(`Folder "${folderName}" created`);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             toast.error("Failed to create folder.");
         }
         setShowConfirm(false);
@@ -189,8 +191,11 @@ const FolderInfo = ({
 
     // Usage function remains the same
     const downloadAndSaveFolder = async (folderId, folderName = "folder") => {
+        if (isDownloading) return;
+
         let toastId;
         try {
+            setIsDownloading(true);
             // Create a persistent toast that doesn't auto-close
             toastId = toast.info("Preparing to download folder...", {
                 autoClose: false,
@@ -227,6 +232,8 @@ const FolderInfo = ({
                 toast.dismiss(toastId);
             }
             toast.error("Failed to download folder.");
+        } finally {
+            setIsDownloading(false);
         }
     };
     return (
@@ -256,50 +263,57 @@ const FolderInfo = ({
                     </div>
                 </div>
 
-                {/* Consolidated actions container */}
-                <div className="main-actions">
-                    {/* Download button - always visible */}
-                    <button
-                        className="btn download"
-                        onClick={() => downloadAndSaveFolder(folderId, name)}
-                        title="Download entire folder as ZIP"
-                    >
-                        <span className="icon download-icon"></span>
-                        <span className="text">Download</span>
-                    </button>
-
-                    {/* Conditional action buttons */}
-                    {!isReadOnlyCourse && canDownload && (
-                        <button className="btn primary" onClick={contributionHandler}>
-                            <span className="icon plus-icon"></span>
-                            <span className="text">{isBR ? "Add File" : "Contribute"}</span>
-                        </button>
-                    )}
-
-                    {!isReadOnlyCourse && isBR && !canDownload && (
+                {/* Consolidated actions container - Hidden for mobile view */}
+                {!isMobileView && (
+                    <div className="main-actions">
+                        {/* Download button - always visible */}
                         <button
-                            className="btn primary"
-                            onClick={handleCreateFolder}
-                            disabled={isAdding}
+                            className="btn download"
+                            onClick={() => downloadAndSaveFolder(folderId, name)}
+                            title="Download entire folder as ZIP"
+                            disabled={isDownloading}
                         >
-                            <span className="icon plus-icon"></span>
-                            <span className="text">{isAdding ? "Creating..." : "Add Folder"}</span>
+                            <span className="icon download-icon"></span>
+                            <span className="text">{isDownloading ? "Download" : "Download"}</span>
                         </button>
-                    )}
-                </div>
+
+                        {/* Conditional action buttons */}
+                        {!isReadOnlyCourse && canDownload && (
+                            <button className="btn primary" onClick={contributionHandler}>
+                                <span className="icon plus-icon"></span>
+                                <span className="text">{isBR ? "Add File" : "Contribute"}</span>
+                            </button>
+                        )}
+
+                        {!isReadOnlyCourse && isBR && !canDownload && (
+                            <button
+                                className="btn primary"
+                                onClick={handleCreateFolder}
+                                disabled={isAdding}
+                            >
+                                <span className="icon plus-icon"></span>
+                                <span className="text">
+                                    {isAdding ? "Creating..." : "Add Folder"}
+                                </span>
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
 
             <Share link={`${clientRoot}/browse/${courseCode}/${folderId}`} />
-            <ConfirmDialog
-                show={showConfirm}
-                input={true}
-                inputValue={newFolderName}
-                onInputChange={(e) => setNewFolderName(e.target.value)}
-                childType={childType}
-                onChildTypeChange={setChildType}
-                onConfirm={handleConfirmCreateFolder}
-                onCancel={() => setShowConfirm(false)}
-            />
+            {!isMobileView && (
+                <ConfirmDialog
+                    show={showConfirm}
+                    input={true}
+                    inputValue={newFolderName}
+                    onInputChange={(e) => setNewFolderName(e.target.value)}
+                    childType={childType}
+                    onChildTypeChange={setChildType}
+                    onConfirm={handleConfirmCreateFolder}
+                    onCancel={() => setShowConfirm(false)}
+                />
+            )}
         </>
     );
 };

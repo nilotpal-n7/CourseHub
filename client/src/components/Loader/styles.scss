@@ -1,35 +1,35 @@
-/* Full page layout */
-.loading-page {
+.loader-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    width: 100vw;
-    background-color: black;
-    color: white;
+    padding: 2rem;
+    min-height: 150px;
+}
+
+.loader-animation {
+    margin-bottom: 1rem;
+}
+
+.loader-text {
+    text-align: center;
+
+    p {
+        font-family: "Regular", sans-serif;
+        font-size: 1rem;
+        color: #666;
+        margin: 0;
+    }
 }
 
 /* Golden circular loader */
-.loader {
+.golden-circular-loader {
     border: 3px solid #d4af37; /* golden thin circle */
     border-top: 3px solid transparent; /* makes the spin effect */
     border-radius: 50%;
     width: 48px; /* size */
     height: 48px; /* size */
     animation: spin 1s linear infinite;
-}
-
-/* Centered text below loader */
-.loading-text {
-    margin-top: 24px;
-    text-align: center;
-}
-
-.loading-text h2 {
-    font-size: 18px;
-    font-weight: 500;
-    margin: 4px 0;
 }
 
 /* Spin animation */
