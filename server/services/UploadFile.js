@@ -29,21 +29,26 @@ async function GetFolderId(contributionId) {
 
 async function CreateFolder(contributionId) {
     const access_token = await getAccessToken();
+    console.log(parent_item_id);
     const url = `https://graph.microsoft.com/v1.0/me/drive/items/${parent_item_id}/children`;
     const config = {
         headers: {
             Authorization: `Bearer ${access_token}`,
         },
     };
+    
     const _data = {
         name: contributionId,
         folder: {},
         "@microsoft.graph.conflictBehavior": "fail",
     };
+    
     try {
         const { data } = await axios.post(url, _data, config);
+        console.log(data);
         return data.id;
     } catch (error) {
+        console.log(error);
         if (error.response.status === 409) {
             const folderId = await GetFolderId(contributionId);
             return folderId;
@@ -72,7 +77,7 @@ async function createUploadSession(folderId, fileName) {
 
 async function UploadFile(contributionId, filePath, fileName) {
     const folderId = await CreateFolder(contributionId);
-    if (!folderId) return false;
+    if (!folderId) return false; //error here
     const { url, access_token } = await createUploadSession(folderId, fileName);
     if (!url) {
         console.log("Error uploading!");

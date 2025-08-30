@@ -3,12 +3,14 @@ import Contribution_card from "./ContributionCard";
 import "./styles.scss";
 import SubHeading from "../../../../components/subheading";
 import { GetMyContributions } from "../../../../api/Contribution";
+import { useSelector } from "react-redux";
 
 import { useEffect, useState } from "react";
 import CourseCard from "../../../dashboard/components/coursecard";
 const Contrisection = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [myContributions, setMyContributions] = useState([]);
+    const isBR=useSelector((state)=>state.user.user.isBR);
     useEffect(() => {
         const callBack = async () => {
             const resp = await GetMyContributions();
@@ -26,6 +28,10 @@ const Contrisection = () => {
                 isApproved={file.isVerified}
                 content={file.name}
                 key={file._id}
+                id={file._id}
+                webUrl={file.webUrl}
+                onedriveId={file.fileId}
+                isBR={isBR}
             />
         )))
     }

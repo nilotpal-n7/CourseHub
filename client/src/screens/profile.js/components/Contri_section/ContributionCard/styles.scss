@@ -7,6 +7,26 @@
     align-items: center;
     margin-bottom: 20px;
 
+    .br_btn {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+    .approve{
+        border: 3px solid rgb(108, 177, 108);
+    }
+    .delete{
+        border: 3px solid rgb(215, 121, 121);
+    }
+
+    .file-link{
+        text-decoration: none;
+        color: black;
+    }
+    .file-link:hover{
+        color:blue;
+    }
+
     .path {
         display: flex;
         flex-direction: column;
@@ -55,7 +75,6 @@
         .btn {
             align-self: center;
         }
-
     }
 }
 
