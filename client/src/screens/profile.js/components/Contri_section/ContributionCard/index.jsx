@@ -7,12 +7,10 @@ import { verifyFile,unverifyFile } from "../../../../../api/File";
 export default function ContributionCard(props) {
     const handleVerify = async () => {
         try {
-            console.log("Verifying file:", props.id);
-            await verifyFile(props.id);
+            console.log("Verifying file:", props?.file?._id);
+            await verifyFile(props?.file?._id);
+            props.verify();
             toast.success("File verified!");
-            location.reload();
-
-            // Instead of reload:
         } catch (err) {
             console.error("Error verifying:", err);
             toast.error("Failed to verify file.");
@@ -21,15 +19,13 @@ export default function ContributionCard(props) {
 
     const handleUnverify = async () => {
             try {
-                await unverifyFile(props.id, props.onedriveId, props.parentFolder);
+                await unverifyFile(props?.file?._id, props?.file?.fileId, props.parentFolder);
                 toast.success("File deleted!");
-                location.reload();
+                props.unverify();
             } catch (err) {
                 console.error("Error deleting:", err);
                 toast.error("Failed to delete file.");
-            } finally {
-                setShowDialog(false);
-            };
+            }
     };
 
     const now = new Date(props.uploadDate);
@@ -43,7 +39,7 @@ export default function ContributionCard(props) {
                     {props.courseCode}
                 </p>
             </div>
-            <p className="content"><a className="file-link" href={props.webUrl} target="_blank">{props.content}</a></p>
+            <p className="content"><a className="file-link" href={props?.file?.webUrl} target="_blank">{props?.file?.name}</a></p>
 
             <div>
                 {
@@ -61,7 +57,7 @@ export default function ContributionCard(props) {
                     ) :
                         (
                             <div className="btn approve">
-                                <Button text={props.isApproved === true ? "APPROVED" : "PENDING"} />
+                                <Button text={props?.file?.isVerified === true ? "APPROVED" : "PENDING"} />
                             </div>
                         )
                 }

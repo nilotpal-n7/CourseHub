@@ -12,19 +12,14 @@
         flex-direction: row;
         gap: 10px;
     }
-    .approve{
-        border: 3px solid rgb(108, 177, 108);
-    }
-    .delete{
-        border: 3px solid rgb(215, 121, 121);
-    }
-
-    .file-link{
+    
+    .file-link {
         text-decoration: none;
         color: black;
     }
-    .file-link:hover{
-        color:blue;
+
+    .file-link:hover {
+        color: blue;
     }
 
     .path {
@@ -48,7 +43,10 @@
     .content {
         justify-content: start;
         align-self: flex-start;
-        width: 50%;
+        width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         margin: 0px 8px 0px 8px;
     }
 }

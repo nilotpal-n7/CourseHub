@@ -34,28 +34,50 @@ const Contrisection = () => {
             setBrContributions((prev) => [...resp.data.unverifiedContributions]);
             setIsLoading(false);
         };
-        callBack();
+        if (isBR)
+            callBack();
     }, []);
-    console.log(brContributions);
+
+    const verifyBRContributions = (key, file) => {
+        const index = brContributions.indexOf(key);
+        const updatedKey = {
+            ...key,
+            files: key.files.map(f =>
+                f === file ? { ...f, isVerified: true } : f
+            )
+        };
+        const newContributions = [...brContributions];
+        newContributions[index] = updatedKey;
+        setBrContributions(newContributions);
+    }
+    const unverifyBRContributions = (key, file) => {
+        const index = brContributions.indexOf(key);
+        const updatedKey = {
+            ...key,
+            files: key.files.filter((f) => f !== file)
+        }
+        const newContributions = [...brContributions];
+        newContributions[index] = updatedKey;
+        setBrContributions(newContributions);
+    }
+
     let ContriCard = [];
     for (const key of isBR ? brContributions : myContributions) {
         ContriCard.push(key.files.map((file) => (
-                !file.isVerified ?
-                    (
-                        <Contribution_card
-                            courseCode={key.courseCode}
-                            uploadDate={key.updatedAt}
-                            isApproved={file.isVerified}
-                            content={file.name}
-                            key={file._id}
-                            id={file._id}
-                            webUrl={file.webUrl}
-                            onedriveId={file.fileId}
-                            parentFolder={brContributions.parentFolder}
-                            isBR={isBR}
-                        />
-                    ):
-                    <></>
+            (!isBR || (isBR && !file.isVerified)) ?
+                (
+                    <Contribution_card
+                        courseCode={key.courseCode}
+                        uploadDate={key.updatedAt}
+                        file={file}
+                        key={file._id}
+                        parentFolder={key.parentFolder}
+                        verify={() => verifyBRContributions(key, file)}
+                        unverify={() => unverifyBRContributions(key, file)}
+                        isBR={isBR}
+                    />
+                ) :
+                <></>
 
         )))
     }
@@ -65,13 +87,13 @@ const Contrisection = () => {
             <div className="c_content">
                 <div className="sub_head">
                     <SubHeading
-                        text={"MY CONTRIBUTIONS"}
+                        text={(isBR)? "PENDING CONTRIBUTIONS": "YOUR CONTRIBUTIONS"}
                         type={"bold"}
                         color={"black"}
                         algn={"center"}
                     />
                 </div>
-                <Loader text="Loading your contributions..." />
+                <Loader text={(isBR)? "Loading pending contributions":"Loading your contributions..."} />
             </div>
         </Container>
     ) : (
@@ -79,11 +101,14 @@ const Contrisection = () => {
             <div className="c_content">
                 <div className="sub_head">
                     <SubHeading
-                        text={"MY CONTRIBUTIONS"}
+                        text={(isBR)? "PENDING CONTRIBUTIONS": "YOUR CONTRIBUTIONS"}
                         type={"bold"}
                         color={"black"}
                         algn={"center"}
                     />
+                    {
+                        (isBR)? (<div className="br-contrib-subheading">You can view a file by clicking on its name</div>) : (<></>)
+                    }
                     {/* {myContributions.length} */}
                 </div>
                 {!(myContributions.length === 0) ? (

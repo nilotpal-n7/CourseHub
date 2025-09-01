@@ -29,7 +29,6 @@ async function GetFolderId(contributionId) {
 
 async function CreateFolder(contributionId) {
     const access_token = await getAccessToken();
-    console.log(parent_item_id);
     const url = `https://graph.microsoft.com/v1.0/me/drive/items/${parent_item_id}/children`;
     const config = {
         headers: {
@@ -45,7 +44,6 @@ async function CreateFolder(contributionId) {
     
     try {
         const { data } = await axios.post(url, _data, config);
-        console.log(data);
         return data.id;
     } catch (error) {
         console.log(error);
