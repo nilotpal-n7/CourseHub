@@ -3,7 +3,6 @@
     width: 40%;
     padding: 3rem 4rem;
     background-color: white;
-    height: auto;
     position: absolute;
 
     z-index: 200;
@@ -16,7 +15,7 @@
 }
 .add-course-scroll {
     overflow: auto;
-    max-height: 250px;
+    max-height: 25vh;
 }
 
 @media screen and (max-width:1270px) {

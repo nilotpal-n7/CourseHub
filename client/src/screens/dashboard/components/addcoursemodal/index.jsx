@@ -80,7 +80,7 @@ const AddCourseModal = ({ handleAddCourse }) => {
                 <form onSubmit={(e) => e.preventDefault()}>
                     <div className="course" style={{marginTop: "1.5rem"}}>
                         <label htmlFor="course" className="label_course">
-                            KEYWORD :
+                            KEY :
                         </label>
                         <input
                             placeholder="Course Code"
