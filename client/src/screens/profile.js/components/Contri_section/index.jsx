@@ -122,19 +122,12 @@ const Contrisection = () => {
                     }
                 </div>
 
-                {/* {!(myContributions.length === 0) ? (
-                    ContriCard
-                ) : (
-                    <div className="No-Contri-graphic" />
-                )} */}
-
-                {(isBR&&!brContributions.length===0)||(!isBR&&!myContributions.length === 0) ?
-                    ContriCard
-                : (
-                    isBR?
+                {(isBR&&brContributions.length===0)?
                     <div className="No-BRcontri-graphic" />:
-                    <div className="No-Contri-graphic" />
-                )}
+                    (!isBR&&myContributions.length === 0) ?
+                        <div className="No-Contri-graphic" />:
+                        ContriCard
+                }
 
             </div>
         </Container>
