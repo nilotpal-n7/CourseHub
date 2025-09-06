@@ -80,9 +80,21 @@ export async function renameCourse(req, res, next) {
                 { course: newCodeUpper }
             );
 
-            // 2. Update all users' readOnly courses that have the old course code
+            // 2. Update all users' courses that have the old course code
+            const usersWithCourses = await User.find({ "courses.code": codeUpper });
+            const courseUpdateResult = await User.updateMany(
+                { "courses.code": codeUpper },
+                { $set: { "courses.$.code": newCodeUpper } }
+            );
+
+            const usersWithPreviousCourses = await User.find({ "previousCourses.code": codeUpper });
+            const previousCourseUpdateResult = await User.updateMany(
+                { "previousCourses.code": codeUpper },
+                { $set: { "previousCourses.$.code": newCodeUpper } }
+            );
+
             const usersWithReadOnly = await User.find({ "readOnly.code": codeUpper });
-            const userUpdateResult = await User.updateMany(
+            const readOnlyUpdateResult = await User.updateMany(
                 { "readOnly.code": codeUpper },
                 { $set: { "readOnly.$.code": newCodeUpper } }
             );
