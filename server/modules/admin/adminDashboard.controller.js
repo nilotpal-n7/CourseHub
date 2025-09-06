@@ -53,7 +53,7 @@ export async function uploadCourses(req, res, next) {
 
 export async function renameCourse(req, res, next) {
     const { code } = req.params;
-    const { name } = req.body;
+    const { name, newCode } = req.body;
 
     if (!name) {
         return next(new AppError(400, "Name required"));
@@ -61,9 +61,21 @@ export async function renameCourse(req, res, next) {
 
     const codeUpper = code.trim().toUpperCase();
 
+    // If a newCode is provided, check for conflicts (case-insensitive, trimmed)
+    if (newCode) {
+        const newCodeUpper = newCode.trim().toUpperCase();
+        // If the new code is different from the current code, ensure it doesn't already exist
+        if (newCodeUpper !== codeUpper) {
+            const conflict = await CourseModel.findOne({ code: newCodeUpper });
+            if (conflict) {
+                return next(new AppError(400, "Course code already exists"));
+            }
+        }
+    }
+
     const course = await CourseModel.findOneAndUpdate(
         { code: codeUpper },
-        { name, code: codeUpper },
+        { name, code: newCode ? newCode.trim().toUpperCase() : codeUpper },
         { new: true }
     );
     if (!course) {

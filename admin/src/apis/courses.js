@@ -17,7 +17,7 @@ export const fetchCourses = async () => {
 };
 
 // Update course name
-export const updateCourseName = async (code, newName) => {
+export const updateCourseName = async (code, newName, newCode) => {
     try {
         const safeCode = code.toLowerCase().trim();
         const response = await fetch(`${API_BASE_URL}api/admin/course/${safeCode}`, {
@@ -26,7 +26,7 @@ export const updateCourseName = async (code, newName) => {
                 "Content-Type": "application/json",
                 Authorization: "Bearer admin-coursehub-cc23-golang",
             },
-            body: JSON.stringify({ name: newName }),
+            body: JSON.stringify({ name: newName, newCode }),
             credentials: "include",
         });
         return await response.json();

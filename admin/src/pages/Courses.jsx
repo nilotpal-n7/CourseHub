@@ -10,6 +10,7 @@ import {
     FaExclamationTriangle,
     FaInfoCircle,
     FaCopy,
+    FaCheck,
 } from "react-icons/fa";
 import {
     Table,
@@ -35,6 +36,7 @@ function Courses() {
     const [showOnlyNameless, setShowOnlyNameless] = useState(false);
     const [showOnlyDuplicates, setShowOnlyDuplicates] = useState(false);
     const [editingCode, setEditingCode] = useState(null);
+    const [editedCode, setEditedCode] = useState("");
     const [editedName, setEditedName] = useState("");
 
     // CSV Upload states
@@ -64,35 +66,43 @@ function Courses() {
         loadCourses();
     }, []);
 
-    const handleRename = async (code, newName) => {
+    const handleRename = async (oldCode, newName, newCode) => {
         try {
-            const updated = await updateCourseName(code, newName);
+            const updated = await updateCourseName(oldCode, newName, newCode);
             if (updated && updated.code) {
                 setCourses((courses) =>
-                    courses.map((c) => (c.code === updated.code ? { ...c, name: updated.name } : c))
+                    courses.map((c) =>
+                        c.code === oldCode ? { ...c, code: updated.code, name: updated.name } : c
+                    )
                 );
             }
         } catch (error) {
-            console.error("Error updating course:", error);
+            if (error.status === 400) {
+                alert(error.message || "Invalid input");
+            }
         }
     };
 
     const startEdit = (code, currentName) => {
         setEditingCode(code);
+        setEditedCode(code);
         setEditedName(currentName || "");
     };
 
     const cancelEdit = () => {
         setEditingCode(null);
+        setEditedCode("");
         setEditedName("");
     };
 
     const saveEdit = () => {
         if (!editingCode) return;
+        const newCode = editedCode.trim().toUpperCase();
         const newName = editedName.trim();
-        if (!newName) return;
-        handleRename(editingCode, newName);
+        if (!newCode || !newName) return;
+        handleRename(editingCode, newName, newCode);
         setEditingCode(null);
+        setEditedCode("");
         setEditedName("");
     };
 
@@ -490,19 +500,14 @@ function Courses() {
                                                                 title="Duplicate course code"
                                                             />
                                                         )}
-                                                        <span>{course.code}</span>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="py-4 pl-6">
-                                                    {editingCode === course.code ? (
-                                                        <div className="flex items-center gap-2">
+                                                        {editingCode === course.code ? (
                                                             <Input
-                                                                value={editedName}
+                                                                value={editedCode}
                                                                 onChange={(e) =>
-                                                                    setEditedName(e.target.value)
+                                                                    setEditedCode(e.target.value)
                                                                 }
-                                                                placeholder="Enter course name"
-                                                                className="h-9 max-w-md"
+                                                                placeholder="Enter course code"
+                                                                className="h-9 max-w-xs font-mono"
                                                                 onKeyDown={(e) => {
                                                                     if (e.key === "Enter")
                                                                         saveEdit();
@@ -510,38 +515,30 @@ function Courses() {
                                                                         cancelEdit();
                                                                 }}
                                                             />
-                                                            <Button
-                                                                size="sm"
-                                                                className="h-9 bg-blue-600 hover:bg-blue-700"
-                                                                onClick={saveEdit}
-                                                            >
-                                                                Save
-                                                            </Button>
-                                                            <Button
-                                                                size="sm"
-                                                                variant="outline"
-                                                                className="h-9"
-                                                                onClick={cancelEdit}
-                                                            >
-                                                                Cancel
-                                                            </Button>
-                                                        </div>
-                                                    ) : course.name ? (
+                                                        ) : (
+                                                            <span>{course.code}</span>
+                                                        )}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-4 pl-6">
+                                                    {editingCode === course.code ? (
+                                                        <Input
+                                                            value={editedName}
+                                                            onChange={(e) =>
+                                                                setEditedName(e.target.value)
+                                                            }
+                                                            placeholder="Enter course name"
+                                                            className="h-9 max-w-md"
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === "Enter") saveEdit();
+                                                                if (e.key === "Escape")
+                                                                    cancelEdit();
+                                                            }}
+                                                        />
+                                                    ) : (
                                                         <span className="text-gray-900 font-medium">
                                                             {course.name}
                                                         </span>
-                                                    ) : (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-auto p-0 text-blue-600 hover:text-blue-800 hover:bg-blue-100/80 transition-all duration-200"
-                                                            onClick={() =>
-                                                                startEdit(course.code, "")
-                                                            }
-                                                        >
-                                                            <FaPen className="mr-2 h-4 w-4" />
-                                                            Add name
-                                                        </Button>
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="py-4 pl-6">
@@ -558,20 +555,44 @@ function Courses() {
                                                 </TableCell>
                                                 <TableCell className="py-4 pl-6">
                                                     <div className="flex items-center space-x-2">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-8 w-8 p-0 hover:bg-blue-100/80 transition-all duration-200 transform hover:scale-110"
-                                                            title="Edit course name"
-                                                            onClick={() =>
-                                                                startEdit(
-                                                                    course.code,
-                                                                    course.name || ""
-                                                                )
-                                                            }
-                                                        >
-                                                            <FaEdit className="h-4 w-4" />
-                                                        </Button>
+                                                        {editingCode === course.code ? null : (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="h-8 w-8 p-0 hover:bg-blue-100/80 transition-all duration-200 transform hover:scale-110"
+                                                                title="Edit course code and name"
+                                                                onClick={() =>
+                                                                    startEdit(
+                                                                        course.code,
+                                                                        course.name
+                                                                    )
+                                                                }
+                                                            >
+                                                                <FaEdit className="h-4 w-4" />
+                                                            </Button>
+                                                        )}
+                                                        {editingCode === course.code && (
+                                                            <>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="h-8 w-8 p-0 hover:bg-green-100/80 transition-all duration-200 transform hover:scale-110"
+                                                                    onClick={saveEdit}
+                                                                    title="Save"
+                                                                >
+                                                                    <FaCheck className="h-4 w-4 text-green-700" />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="h-8 w-8 p-0 hover:bg-red-100/80 transition-all duration-200 transform hover:scale-110"
+                                                                    onClick={cancelEdit}
+                                                                    title="Cancel"
+                                                                >
+                                                                    <FaTimes className="h-4 w-4 text-red-700" />
+                                                                </Button>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
