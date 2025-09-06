@@ -10,6 +10,8 @@ import {
     FaExclamationTriangle,
     FaInfoCircle,
     FaCopy,
+    FaCheck,
+    FaTrash,
 } from "react-icons/fa";
 import {
     Table,
@@ -24,7 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/components/ui/modal";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { fetchCourses, updateCourseName, bulkSyncCourses } from "@/apis/courses";
+import { fetchCourses, updateCourseName, bulkSyncCourses, deleteCourse } from "@/apis/courses";
 
 function Courses() {
     const [courses, setCourses] = useState([]);
@@ -35,7 +37,13 @@ function Courses() {
     const [showOnlyNameless, setShowOnlyNameless] = useState(false);
     const [showOnlyDuplicates, setShowOnlyDuplicates] = useState(false);
     const [editingCode, setEditingCode] = useState(null);
+    const [editedCode, setEditedCode] = useState("");
     const [editedName, setEditedName] = useState("");
+
+    // Delete states
+    const [courseToDelete, setCourseToDelete] = useState(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     // CSV Upload states
     const [showUploadModal, setShowUploadModal] = useState(false);
@@ -64,36 +72,85 @@ function Courses() {
         loadCourses();
     }, []);
 
-    const handleRename = async (code, newName) => {
+    const handleRename = async (oldCode, newName, newCode) => {
         try {
-            const updated = await updateCourseName(code, newName);
+            const updated = await updateCourseName(oldCode, newName, newCode);
             if (updated && updated.code) {
                 setCourses((courses) =>
-                    courses.map((c) => (c.code === updated.code ? { ...c, name: updated.name } : c))
+                    courses.map((c) =>
+                        c.code === oldCode ? { ...c, code: updated.code, name: updated.name } : c
+                    )
                 );
             }
         } catch (error) {
-            console.error("Error updating course:", error);
+            if (error.status === 400) {
+                alert(error.message || "Invalid input");
+            }
         }
     };
 
     const startEdit = (code, currentName) => {
         setEditingCode(code);
+        setEditedCode(code);
         setEditedName(currentName || "");
     };
 
     const cancelEdit = () => {
         setEditingCode(null);
+        setEditedCode("");
         setEditedName("");
     };
 
     const saveEdit = () => {
         if (!editingCode) return;
+        const newCode = editedCode.trim().toUpperCase();
         const newName = editedName.trim();
-        if (!newName) return;
-        handleRename(editingCode, newName);
+        if (!newCode || !newName) return;
+        handleRename(editingCode, newName, newCode);
         setEditingCode(null);
+        setEditedCode("");
         setEditedName("");
+    };
+
+    const handleDeleteClick = (course) => {
+        setCourseToDelete(course);
+        setShowDeleteConfirm(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!courseToDelete) return;
+
+        setDeleting(true);
+        try {
+            const result = await deleteCourse(courseToDelete.code);
+
+            // Remove the course from the local state
+            setCourses((prevCourses) => prevCourses.filter((c) => c.code !== courseToDelete.code));
+
+            // Show success message with affected users count
+            const successMessage = `Course "${courseToDelete.code}" deleted successfully.`;
+            const affectedUsersMessage =
+                result.affectedUsers > 0
+                    ? ` ${result.affectedUsers} user(s) were updated.`
+                    : " No users were affected.";
+
+            alert(successMessage + affectedUsersMessage);
+        } catch (error) {
+            // Show detailed error message
+            const errorMessage =
+                error.response?.data?.message || error.message || "Unknown error occurred";
+            alert(`Failed to delete course: ${errorMessage}`);
+            console.error("Delete course error:", error);
+        } finally {
+            setDeleting(false);
+            setShowDeleteConfirm(false);
+            setCourseToDelete(null);
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteConfirm(false);
+        setCourseToDelete(null);
     };
 
     const handlePageChange = (page) => {
@@ -490,19 +547,14 @@ function Courses() {
                                                                 title="Duplicate course code"
                                                             />
                                                         )}
-                                                        <span>{course.code}</span>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell className="py-4 pl-6">
-                                                    {editingCode === course.code ? (
-                                                        <div className="flex items-center gap-2">
+                                                        {editingCode === course.code ? (
                                                             <Input
-                                                                value={editedName}
+                                                                value={editedCode}
                                                                 onChange={(e) =>
-                                                                    setEditedName(e.target.value)
+                                                                    setEditedCode(e.target.value)
                                                                 }
-                                                                placeholder="Enter course name"
-                                                                className="h-9 max-w-md"
+                                                                placeholder="Enter course code"
+                                                                className="h-9 max-w-xs font-mono"
                                                                 onKeyDown={(e) => {
                                                                     if (e.key === "Enter")
                                                                         saveEdit();
@@ -510,38 +562,30 @@ function Courses() {
                                                                         cancelEdit();
                                                                 }}
                                                             />
-                                                            <Button
-                                                                size="sm"
-                                                                className="h-9 bg-blue-600 hover:bg-blue-700"
-                                                                onClick={saveEdit}
-                                                            >
-                                                                Save
-                                                            </Button>
-                                                            <Button
-                                                                size="sm"
-                                                                variant="outline"
-                                                                className="h-9"
-                                                                onClick={cancelEdit}
-                                                            >
-                                                                Cancel
-                                                            </Button>
-                                                        </div>
-                                                    ) : course.name ? (
+                                                        ) : (
+                                                            <span>{course.code}</span>
+                                                        )}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-4 pl-6">
+                                                    {editingCode === course.code ? (
+                                                        <Input
+                                                            value={editedName}
+                                                            onChange={(e) =>
+                                                                setEditedName(e.target.value)
+                                                            }
+                                                            placeholder="Enter course name"
+                                                            className="h-9 max-w-md"
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === "Enter") saveEdit();
+                                                                if (e.key === "Escape")
+                                                                    cancelEdit();
+                                                            }}
+                                                        />
+                                                    ) : (
                                                         <span className="text-gray-900 font-medium">
                                                             {course.name}
                                                         </span>
-                                                    ) : (
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-auto p-0 text-blue-600 hover:text-blue-800 hover:bg-blue-100/80 transition-all duration-200"
-                                                            onClick={() =>
-                                                                startEdit(course.code, "")
-                                                            }
-                                                        >
-                                                            <FaPen className="mr-2 h-4 w-4" />
-                                                            Add name
-                                                        </Button>
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="py-4 pl-6">
@@ -558,20 +602,57 @@ function Courses() {
                                                 </TableCell>
                                                 <TableCell className="py-4 pl-6">
                                                     <div className="flex items-center space-x-2">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-8 w-8 p-0 hover:bg-blue-100/80 transition-all duration-200 transform hover:scale-110"
-                                                            title="Edit course name"
-                                                            onClick={() =>
-                                                                startEdit(
-                                                                    course.code,
-                                                                    course.name || ""
-                                                                )
-                                                            }
-                                                        >
-                                                            <FaEdit className="h-4 w-4" />
-                                                        </Button>
+                                                        {editingCode === course.code ? null : (
+                                                            <>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="h-8 w-8 p-0 hover:bg-blue-100/80 transition-all duration-200 transform hover:scale-110"
+                                                                    title="Edit course code and name"
+                                                                    onClick={() =>
+                                                                        startEdit(
+                                                                            course.code,
+                                                                            course.name
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <FaEdit className="h-4 w-4" />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="h-8 w-8 p-0 hover:bg-red-100/80 transition-all duration-200 transform hover:scale-110"
+                                                                    title="Delete course"
+                                                                    onClick={() =>
+                                                                        handleDeleteClick(course)
+                                                                    }
+                                                                >
+                                                                    <FaTrash className="h-4 w-4 text-red-600" />
+                                                                </Button>
+                                                            </>
+                                                        )}
+                                                        {editingCode === course.code && (
+                                                            <>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="h-8 w-8 p-0 hover:bg-green-100/80 transition-all duration-200 transform hover:scale-110"
+                                                                    onClick={saveEdit}
+                                                                    title="Save"
+                                                                >
+                                                                    <FaCheck className="h-4 w-4 text-green-700" />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="h-8 w-8 p-0 hover:bg-red-100/80 transition-all duration-200 transform hover:scale-110"
+                                                                    onClick={cancelEdit}
+                                                                    title="Cancel"
+                                                                >
+                                                                    <FaTimes className="h-4 w-4 text-red-700" />
+                                                                </Button>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -762,6 +843,49 @@ function Courses() {
                         {uploading
                             ? `${syncProgress.current}/${syncProgress.total} synced`
                             : "Confirm Sync"}
+                    </Button>
+                </ModalFooter>
+            </Modal>
+
+            {/* Delete Confirmation Modal */}
+            <Modal isOpen={showDeleteConfirm} onClose={handleDeleteCancel}>
+                <ModalHeader>
+                    <div className="flex items-center space-x-2">
+                        <FaExclamationTriangle className="h-6 w-6 text-red-600" />
+                        <span>Delete Course</span>
+                    </div>
+                </ModalHeader>
+                <ModalBody>
+                    <Alert variant="destructive">
+                        <AlertDescription>
+                            <div className="mt-2 space-y-2">
+                                <p>
+                                    You are about to delete the course:{" "}
+                                    <strong>{courseToDelete?.code}</strong>
+                                    {courseToDelete?.name && <span> - {courseToDelete.name}</span>}
+                                </p>
+                                <p className="text-sm">This will:</p>
+                                <ul className="text-sm list-disc list-inside space-y-1 ml-4">
+                                    <li>Remove the course from all users who have it</li>
+                                    <li>Delete all course data from the database</li>
+                                </ul>
+                                <p className="font-semibold text-red-600">
+                                    This action is permanent and cannot be undone.
+                                </p>
+                            </div>
+                        </AlertDescription>
+                    </Alert>
+                </ModalBody>
+                <ModalFooter>
+                    <Button variant="outline" onClick={handleDeleteCancel} disabled={deleting}>
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleDeleteConfirm}
+                        disabled={deleting}
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                        {deleting ? "Deleting..." : "Delete Course"}
                     </Button>
                 </ModalFooter>
             </Modal>

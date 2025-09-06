@@ -4,7 +4,7 @@ import adminController from "./admin.controller.js";
 import AppError from "../../utils/appError.js";
 import isAdmin from "../../middleware/isAdmin.js";
 import multer from "multer";
-import { uploadCourses, renameCourse } from "./adminDashboard.controller.js";
+import { uploadCourses, renameCourse, deleteCourse } from "./adminDashboard.controller.js";
 import { adminLogin, adminLogout } from "./auth.controller.js";
 
 const router = express.Router();
@@ -43,5 +43,6 @@ router.post(
 
 router.post("/courses/upload", isAdmin, upload.single("file"), uploadCourses);
 router.patch("/course/:code", isAdmin, renameCourse);
+router.delete("/course/:code/delete", isAdmin, catchAsync(deleteCourse));
 
 export default router;
