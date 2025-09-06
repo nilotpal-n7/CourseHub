@@ -74,18 +74,25 @@ export async function renameCourse(req, res, next) {
             }
 
             // 1. Update all folders with the old code to use the new code
-            const codeLower = codeUpper.toLowerCase();
-            const newCodeLower = newCodeUpper.toLowerCase();
-            await FolderModel.updateMany({ course: codeLower }, { course: newCodeLower });
+            const foldersToUpdate = await FolderModel.find({ course: codeUpper });
+            const folderUpdateResult = await FolderModel.updateMany(
+                { course: codeUpper },
+                { course: newCodeUpper }
+            );
 
             // 2. Update all users' readOnly courses that have the old course code
-            await User.updateMany(
+            const usersWithReadOnly = await User.find({ "readOnly.code": codeUpper });
+            const userUpdateResult = await User.updateMany(
                 { "readOnly.code": codeUpper },
                 { $set: { "readOnly.$.code": newCodeUpper } }
             );
 
             // 3. Update all contributions with the old course code
-            await Contribution.updateMany({ courseCode: codeUpper }, { courseCode: newCodeUpper });
+            const contributionsToUpdate = await Contribution.find({ courseCode: codeUpper });
+            const contributionUpdateResult = await Contribution.updateMany(
+                { courseCode: codeUpper },
+                { courseCode: newCodeUpper }
+            );
         }
     }
 
