@@ -46,8 +46,12 @@ const Contrisection = () => {
                 f === file ? { ...f, isVerified: true } : f
             )
         };
+        let removekey = 1;
+        for(const file of updatedKey.files)
+            if(!file.isVerified) removekey = 0;
         const newContributions = [...brContributions];
-        newContributions[index] = updatedKey;
+        if(!removekey) newContributions[index] = updatedKey;
+        else newContributions.splice(index, 1);
         setBrContributions(newContributions);
     }
     const unverifyBRContributions = (key, file) => {
@@ -56,8 +60,12 @@ const Contrisection = () => {
             ...key,
             files: key.files.filter((f) => f !== file)
         }
+        let removekey = 1;
+        for(const file of updatedKey.files)
+            if(!file.isVerified) removekey = 0;
         const newContributions = [...brContributions];
-        newContributions[index] = updatedKey;
+        if(!removekey) newContributions[index] = updatedKey;
+        else newContributions.splice(index, 1);
         setBrContributions(newContributions);
     }
 
