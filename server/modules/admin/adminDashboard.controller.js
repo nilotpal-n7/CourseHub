@@ -72,6 +72,27 @@ export async function renameCourse(req, res, next) {
             if (conflict) {
                 return next(new AppError(400, "Course code already exists"));
             }
+
+            // 1. Update all folders with the old code to use the new code
+            const foldersToUpdate = await FolderModel.find({ course: codeUpper });
+            const folderUpdateResult = await FolderModel.updateMany(
+                { course: codeUpper },
+                { course: newCodeUpper }
+            );
+
+            // 2. Update all users' readOnly courses that have the old course code
+            const usersWithReadOnly = await User.find({ "readOnly.code": codeUpper });
+            const userUpdateResult = await User.updateMany(
+                { "readOnly.code": codeUpper },
+                { $set: { "readOnly.$.code": newCodeUpper } }
+            );
+
+            // 3. Update all contributions with the old course code
+            const contributionsToUpdate = await Contribution.find({ courseCode: codeUpper });
+            const contributionUpdateResult = await Contribution.updateMany(
+                { courseCode: codeUpper },
+                { courseCode: newCodeUpper }
+            );
         }
     }
 
