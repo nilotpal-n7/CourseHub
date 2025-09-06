@@ -129,3 +129,28 @@ export const bulkSyncCourses = async (courses, analysis, onProgress = null) => {
 
     return results;
 };
+
+// Delete a course
+export const deleteCourse = async (code) => {
+    try {
+        const safeCode = code.toLowerCase().trim();
+        const response = await fetch(`${API_BASE_URL}api/admin/course/${safeCode}/delete`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer admin-coursehub-cc23-golang",
+            },
+            credentials: "include",
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to delete course");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error deleting course:", error);
+        throw error;
+    }
+};
