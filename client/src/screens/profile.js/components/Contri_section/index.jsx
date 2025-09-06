@@ -82,12 +82,16 @@ const Contrisection = () => {
         )))
     }
 
+    let contri_heading_text=isBR?(brContributions.length===0?"NO PENDING CONTRIBUTIONS":"PENDING CONTRIBUTIONS"): "YOUR CONTRIBUTIONS";
+    let br_contri_subheading_text=brContributions.length===0?"When someone contributes a file, it will appear here for verification":"You can view a file by clicking on its name";
+
+
     return isLoading ? (
         <Container color={"light"}>
             <div className="c_content">
                 <div className="sub_head">
                     <SubHeading
-                        text={(isBR)? "PENDING CONTRIBUTIONS": "YOUR CONTRIBUTIONS"}
+                        text={contri_heading_text}
                         type={"bold"}
                         color={"black"}
                         algn={"center"}
@@ -101,21 +105,37 @@ const Contrisection = () => {
             <div className="c_content">
                 <div className="sub_head">
                     <SubHeading
-                        text={(isBR)? "PENDING CONTRIBUTIONS": "YOUR CONTRIBUTIONS"}
+                        text={contri_heading_text}
                         type={"bold"}
                         color={"black"}
                         algn={"center"}
                     />
                     {
-                        (isBR)? (<div className="br-contrib-subheading">You can view a file by clicking on its name</div>) : (<></>)
+                        (isBR)? (
+                            
+                            <div className="br-contrib-subheading">
+                            {br_contri_subheading_text}
+                            </div>
+                            
+                            )
+                            : (<></>)
                     }
-                    {/* {myContributions.length} */}
                 </div>
+
                 {!(myContributions.length === 0) ? (
                     ContriCard
                 ) : (
                     <div className="No-Contri-graphic" />
                 )}
+
+                {/* {(isBR&&!brContributions.length===0)||(!isBR&&!myContributions.length === 0) ?
+                    ContriCard
+                : (
+                    isBR?
+                    <div className="No-BRcontri-graphic" />:
+                    <div className="No-Contri-graphic" />
+                )} */}
+
             </div>
         </Container>
     );
