@@ -35,15 +35,18 @@ async function CreateFolder(contributionId) {
             Authorization: `Bearer ${access_token}`,
         },
     };
+    
     const _data = {
         name: contributionId,
         folder: {},
         "@microsoft.graph.conflictBehavior": "fail",
     };
+    
     try {
         const { data } = await axios.post(url, _data, config);
         return data.id;
     } catch (error) {
+        console.log(error);
         if (error.response.status === 409) {
             const folderId = await GetFolderId(contributionId);
             return folderId;
@@ -72,7 +75,7 @@ async function createUploadSession(folderId, fileName) {
 
 async function UploadFile(contributionId, filePath, fileName) {
     const folderId = await CreateFolder(contributionId);
-    if (!folderId) return false;
+    if (!folderId) return false; //error here
     const { url, access_token } = await createUploadSession(folderId, fileName);
     if (!url) {
         console.log("Error uploading!");
