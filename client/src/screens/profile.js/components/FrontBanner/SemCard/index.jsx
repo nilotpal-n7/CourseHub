@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { updateUser } from "../../../../../api/User";
 import { UpdateUserAction } from "../../../../../actions/user_actions";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,7 +52,6 @@ function SemCard(props) {
                 <div className="inputDiv">{props.sem}</div>
             </div>
             <div className="inner2">Semester</div>
-            <ToastContainer />
         </div>
     );
 }
