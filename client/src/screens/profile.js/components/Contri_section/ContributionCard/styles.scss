@@ -7,6 +7,21 @@
     align-items: center;
     margin-bottom: 20px;
 
+    .br_btn {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+    
+    .file-link {
+        text-decoration: none;
+        color: black;
+    }
+
+    .file-link:hover {
+        color: blue;
+    }
+
     .path {
         display: flex;
         flex-direction: column;
@@ -28,7 +43,10 @@
     .content {
         justify-content: start;
         align-self: flex-start;
-        width: 50%;
+        width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         margin: 0px 8px 0px 8px;
     }
 }

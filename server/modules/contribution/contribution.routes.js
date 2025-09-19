@@ -19,5 +19,6 @@ router.post(
 );
 // router.get("/:id", catchAsync(ContributionController.CreateNewContribution));
 router.post("/updated", catchAsync(ContributionController.GetContributionsUpdatedSince));
+router.post("/br",isAuthenticated, ContributionController.GetBrContribution)
 
 export default router;

@@ -1,4 +1,4 @@
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../../../api/User";
@@ -91,7 +91,6 @@ const FrontBanner = () => {
                     <SemCard sem={user.user.semester} />
                 </div>
             </div>
-            <ToastContainer />
         </Container>
     );
 };

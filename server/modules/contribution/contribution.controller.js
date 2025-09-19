@@ -200,6 +200,27 @@ async function GetContributionsUpdatedSince(req, res, next) {
     return res.json({ codes, contributions });
 }
 
+async function GetBrContribution(req, res, next) {
+    try {
+        const { courses } = req.body;
+
+        if (!courses || !Array.isArray(courses)) {
+            return res.status(400).json({ error: "courses array required" });
+        }
+        const codes = courses.map((course) => course.code);
+        const contributions = await Contribution.find({
+            courseCode: { $in: codes }
+        }).populate({
+            path: "files",
+        });
+        const unverifiedContributions = contributions.filter(c => c.files.some(f => f.isVerified === false));
+
+        res.json({ unverifiedContributions });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export default {
     GetAllContributions,
     CreateNewContribution,
@@ -208,4 +229,5 @@ export default {
     MobileFileUploadHandler,
     DeleteContribution,
     GetContributionsUpdatedSince,
+    GetBrContribution
 };
