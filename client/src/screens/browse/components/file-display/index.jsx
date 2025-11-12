@@ -24,7 +24,14 @@ import ConfirmDialog from "./components/ConfirmDialog.jsx";
 import { getFileDownloadLink } from "../../../../api/File";
 import server from "../../../../api/server.js";
 
-const FileDisplay = ({ file, path, code, isMobileView = false }) => {
+const FileDisplay = ({
+    file,
+    path,
+    code,
+    isMobileView = false,
+    isSelected,
+    onToggleSelect,
+}) => {
     const user = useSelector((state) => state.user?.user);
     const currYear = useSelector((state) => state.fileBrowser.currentYear);
     const fileSize = formatFileSize(file.size);
@@ -192,8 +199,20 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
         <div
             className={`file-display ${
                 user?.isBR ? (file.isVerified ? "verified" : "unverified") : ""
-            }`}
+            } ${isSelected ? "selected" : ""}`}
         >
+
+            {!isMobileView && (
+                <span
+                    className={`select-checkbox ${isSelected ? "selected" : ""}`}
+                    title="Select file"
+                    onClick={(e) => {
+                        e.stopPropagation(); // Prevent preview/other actions
+                        onToggleSelect(file._id); // Toggle selection
+                    }}
+                ></span>
+            )}
+
             <img
                 src={file.thumbnail}
                 style={{ display: "none" }}
@@ -221,7 +240,10 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
                             {!file.isVerified ? (
                                 <span
                                     className="verify"
-                                    onClick={handleVerify}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleVerify();
+                                    }}
                                     title="Verify"
                                 ></span>
                             ) : (
@@ -229,14 +251,23 @@ const FileDisplay = ({ file, path, code, isMobileView = false }) => {
                             )}
                             <span
                                 className="unverify"
-                                onClick={handleUnverify}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleUnverify();
+                                }}
                                 title="Delete"
                             ></span>
                         </>
                     )}
                     {/* <span className="share" onClick={handleShare}></span> */}
 
-                    <span className="download" onClick={handleDownload}></span>
+                    <span
+                        className="download"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownload();
+                        }}
+                    ></span>
                     {/* <span
                         className="star"
                         onClick={() => {

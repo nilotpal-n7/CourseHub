@@ -47,6 +47,7 @@ function useIsMobile() {
 const BrowseScreen = () => {
     const navigate = useNavigate();
     const isMobile = useIsMobile();
+    const [selectedItems, setSelectedItems] = useState(new Set());
     const user = useSelector((state) => state.user);
     const folderData = useSelector((state) => state.fileBrowser.currentFolder);
     const folderHistory = useSelector((state) => state.fileBrowser.folderHistory);
@@ -55,6 +56,21 @@ const BrowseScreen = () => {
     const currCourseCode = useSelector((state) => state.fileBrowser.currentCourseCode);
     const currYear = useSelector((state) => state.fileBrowser.currentYear);
     const allCourseData = useSelector((state) => state.fileBrowser.allCourseData);
+
+    const handleSelectItemToggle = (itemId) => {
+        setSelectedItems((prevSelected) => {
+            const newSet = new Set(prevSelected);
+            if (newSet.has(itemId)) {
+                newSet.delete(itemId);
+            } else {
+                newSet.add(itemId);
+            }
+            return newSet;
+        });
+    };
+    const handleClearSelection = () => {
+        setSelectedItems(new Set());
+    };
 
     const sortFile = (a, b) => {
         if (a?.name > b?.name) return 1;
@@ -302,6 +318,7 @@ const BrowseScreen = () => {
     // Handler for back button
     const handleBackClick = () => {
         if (folderHistory.length > 0) {
+            handleClearSelection();
             dispatch(PopFolderHistory());
         }
     };
@@ -325,6 +342,7 @@ const BrowseScreen = () => {
         const selectedCode = e.target.value;
         if (selectedCode && selectedCode !== currCourseCode) {
             try {
+                handleClearSelection();
                 // Clear current folder data while loading
                 dispatch(ChangeCurrentYearData(null, []));
                 dispatch(ChangeFolder(null));
@@ -385,6 +403,7 @@ const BrowseScreen = () => {
     const handleYearChange = (e) => {
         const selectedYearIndex = parseInt(e.target.value);
         if (selectedYearIndex !== currYear && !isNaN(selectedYearIndex)) {
+            handleClearSelection();
             const selectedYear = allYears[selectedYearIndex];
             if (selectedYear) {
                 dispatch(ClearFolderHistory()); // Clear folder history when changing years
@@ -394,6 +413,18 @@ const BrowseScreen = () => {
             }
         }
     };
+
+    const selectedFolderData =
+        folderData?.children?.filter(
+            (item) =>
+                folderData.childType === "Folder" && selectedItems.has(item._id)
+        ) || [];
+
+    const selectedFileData =
+        folderData?.children?.filter(
+            (item) =>
+                folderData.childType === "File" && selectedItems.has(item._id)
+        ) || [];
 
     return (
         <Container color={"light"} type={"fluid"}>
@@ -457,6 +488,8 @@ const BrowseScreen = () => {
                                             files={folderData?.children}
                                             code={currCourseCode}
                                             isMobileView={isMobile}
+                                            selectedItems={selectedItems}
+                                            onToggleSelect={handleSelectItemToggle}
                                         />
                                     )
                                 ) : folderData?.children?.length === 0 ? (
@@ -474,6 +507,9 @@ const BrowseScreen = () => {
                                             folderData={folder}
                                             parentFolder={folderData}
                                             isMobileView={isMobile}
+                                            isSelected={selectedItems.has(folder._id)}
+                                            onToggleSelect={handleSelectItemToggle}
+                                            onClearSelection={handleClearSelection}
                                         />
                                     ))
                                 )}
@@ -538,6 +574,9 @@ const BrowseScreen = () => {
                                     contributionHandler={contributionHandler}
                                     folderId={folderData?._id}
                                     courseCode={folderData?.course}
+                                    isMobileView={isMobile}
+                                    selectedFolderData={selectedFolderData}
+                                    selectedFileData={selectedFileData}
                                 />
                             )}
                             <div className="files">
@@ -550,6 +589,9 @@ const BrowseScreen = () => {
                                         <FileController
                                             files={folderData?.children}
                                             code={currCourseCode}
+                                            isMobileView={isMobile}
+                                            selectedItems={selectedItems}
+                                            onToggleSelect={handleSelectItemToggle}
                                         />
                                     )
                                 ) : folderData?.children?.length === 0 ? (
@@ -566,6 +608,10 @@ const BrowseScreen = () => {
                                             subject={folder.course}
                                             folderData={folder}
                                             parentFolder={folderData}
+                                            isMobileView={isMobile}
+                                            isSelected={selectedItems.has(folder._id)}
+                                            onToggleSelect={handleSelectItemToggle}
+                                            onClearSelection={handleClearSelection}
                                         />
                                     ))
                                 )}

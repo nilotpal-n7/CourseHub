@@ -22,6 +22,9 @@ const BrowseFolder = ({
     folderData,
     parentFolder,
     isMobileView = false,
+    isSelected,
+    onToggleSelect,
+    onClearSelection,
 }) => {
     const dispatch = useDispatch();
     const currYear = useSelector((state) => state.fileBrowser.currentYear);
@@ -52,6 +55,7 @@ const BrowseFolder = ({
     };
 
     const onClick = (folderData) => {
+        onClearSelection();
         // Push current folder to history before navigating
         if (currentFolder) {
             dispatch(PushFolderHistory(currentFolder));
@@ -81,6 +85,18 @@ const BrowseFolder = ({
     return (
         <>
             <div className="browse-folder" onClick={() => onClick(folderData)}>
+                {!isMobileView && (
+                    <span
+                        className={`select-checkbox ${isSelected ? "selected" : ""}`}
+                        title="Select folder"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleSelect(folderData._id);
+                        }}
+                    >
+                    </span>
+                )}
+
                 {/* {type === "folder" ? (
                 <svg
                     width="200"

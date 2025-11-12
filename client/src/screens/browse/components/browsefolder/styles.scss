@@ -8,8 +8,13 @@
     background: url(./folder.svg), none;
     background-position: center;
     background-repeat: no-repeat;
+    position: relative;
+
     &:hover {
         transform: translateY(-2px);
+        .select-checkbox {
+            display: block;
+        }
     }
 
     // Mobile styles for 2 folders per row - dynamic squares with larger width
@@ -29,17 +34,75 @@
         aspect-ratio: 1; // Perfect square: width = height
     }
 
+    .select-checkbox {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 22px;
+        height: 22px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border: 2px solid #adb5bd; // Gray border
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 3; // Higher than .content
+        display: none; // Hidden by default
+        transition: all 0.2s ease;
+
+        &.selected {
+            display: block; // Show if selected
+            background-color: #007bff; // Blue background
+            border-color: #007bff;
+            
+            &::after { // Simple checkmark
+                content: '✓';
+                color: white;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 14px;
+                font-weight: bold;
+            }
+        }
+
+        // Responsive adjustments for checkbox
+        @media (max-width: 768px) {
+            top: 8px;
+            left: 8px;
+            width: 20px;
+            height: 20px;
+
+            &.selected::after {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            top: 6px;
+            left: 6px;
+            width: 18px;
+            height: 18px;
+
+            &.selected::after {
+                font-size: 10px;
+            }
+        }
+    }
+
     svg {
         position: absolute;
         z-index: -1;
     }
+
     .content {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         height: 100%;
+
         .top {
             position: relative;
+
             .delete {
                 background: url(./Delete.svg), none;
                 position: absolute;
@@ -55,6 +118,7 @@
                 transition: opacity 0.2s ease-in-out;
                 z-index: 3;
             }
+
             .path {
                 padding: 30px 50px 0px 15px;
                 font-size: 0.9rem;
@@ -70,6 +134,7 @@
                     font-size: 0.75rem;
                 }
             }
+
             .input-rename {
                 border: none;
                 background-color: transparent;
@@ -83,6 +148,7 @@
                 resize: none;
                 overflow: auto;
             }
+
             .name {
                 font-family: "Bold";
                 font-size: 1.2rem;
@@ -128,18 +194,22 @@
                     }
                 }
             }
+
             .name:hover .rename-tick {
                 opacity: 1;
             }
         }
+
         .top:hover .delete {
             opacity: 1;
         }
+
         .bottom {
             width: 100%;
             text-align: right;
             display: flex;
             justify-content: right;
+
             .subject {
                 width: 85%;
                 text-align: right;
@@ -152,13 +222,15 @@
     }
 
     @media screen and (max-width: 768px) {
-        width: calc(30% - 8px);
+        width: calc(30% - 8px); // FIXME: This overrides the 'calc(50% - 4px)' from above
         height: auto;
         aspect-ratio: 1;
         margin: 8px;
 
         .content {
+
             .top {
+
                 .delete {
                     width: 16px;
                     height: 16px;
@@ -178,6 +250,7 @@
             }
 
             .bottom {
+
                 .subject {
                     font-size: 1rem;
                     padding: 0px 10px 15px 0px;
@@ -187,13 +260,15 @@
     }
 
     @media screen and (max-width: 480px) {
-        width: calc(47% - 8px);
+        width: calc(47% - 8px); // FIXME: This overrides the 'calc(50% - 4px)' from above
         height: auto;
         aspect-ratio: 1;
         margin: 6px;
 
         .content {
+
             .top {
+
                 .delete {
                     width: 14px;
                     height: 14px;
@@ -213,6 +288,7 @@
             }
 
             .bottom {
+
                 .subject {
                     font-size: 0.9rem;
                     padding: 0px 8px 10px 0px;

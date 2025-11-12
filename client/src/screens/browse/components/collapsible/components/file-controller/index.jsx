@@ -2,7 +2,13 @@ import File from "../file/";
 import FileDisplay from "../../../file-display";
 import { useSelector } from "react-redux";
 
-const FileController = ({ files, code, isMobileView = false }) => {
+const FileController = ({
+    files,
+    code,
+    isMobileView = false,
+    selectedItems, 
+    onToggleSelect
+}) => {
     const user = useSelector((state) => state.user.user);
 
     if (!files) return null;
@@ -17,7 +23,14 @@ const FileController = ({ files, code, isMobileView = false }) => {
     // console.log("Visible files after filtering:", visibleFiles);
 
     return visibleFiles.map((file) => (
-        <FileDisplay file={file} key={file._id} code={code} isMobileView={isMobileView} />
+        <FileDisplay
+            file={file}
+            key={file._id}
+            code={code}
+            isMobileView={isMobileView}
+            isSelected={selectedItems.has(file._id)}
+            onToggleSelect={onToggleSelect}
+        />
     ));
 };
 

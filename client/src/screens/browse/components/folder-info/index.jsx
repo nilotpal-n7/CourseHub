@@ -21,6 +21,30 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { fetchFolder } from "../../../../api/Folder";
 
+/**
+ * Merges the contents of a childZip into a mainZip, placing them inside a folder.
+ * @param {JSZip} mainZip The root zip object.
+ * @param {JSZip} childZip The zip object to merge.
+ * @param {string} folderName The name of the folder to create in mainZip.
+ */
+async function mergeZip(mainZip, childZip, folderName) {
+    const promises = [];
+    childZip.forEach((relativePath, file) => {
+        if (!file.dir) {
+            promises.push(
+                file.async("blob").then((content) => {
+                    // Add file to main zip under the new folder name
+                    mainZip.file(`${folderName}/${relativePath}`, content);
+                })
+            );
+        } else {
+            // Ensure nested folder structure is created
+            mainZip.folder(`${folderName}/${relativePath}`);
+        }
+    });
+    await Promise.all(promises);
+}
+
 const FolderInfo = ({
     isBR,
     path,
@@ -29,7 +53,9 @@ const FolderInfo = ({
     contributionHandler,
     folderId,
     courseCode,
-    isMobileView = false, // New prop for mobile view
+    isMobileView = false,
+    selectedFolderData = [],
+    selectedFileData = [],
 }) => {
     const dispatch = useDispatch();
     const currYear = useSelector((state) => state.fileBrowser.currentYear);
@@ -108,79 +134,47 @@ const FolderInfo = ({
         setIsAdding(false);
     };
 
-    const downloadFolder = async (id, folderPath = "") => {
+    const fetchAndZipFile = async (file, zip) => {
+        try {
+            // 1. Call a NEW "proxy" endpoint on your backend
+            const fileResponse = await fetch(`${server}/api/files/download-proxy`, { // <-- NEW ENDPOINT
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url: file.webUrl }), // Send the SharePoint URL
+            });
+
+            if (!fileResponse.ok) {
+                throw new Error(`Failed to proxy file: ${file.name}`);
+            }
+
+            // 2. The response *is* the file blob itself, not JSON
+            const fileBlob = await fileResponse.blob(); 
+            
+            // 3. Add the blob directly to the zip
+            zip.file(file.name, fileBlob);
+
+        } catch (error) {
+            console.error(`Error downloading file ${file.name}:`, error);
+            toast.error(`Failed to download file: ${file.name}`);
+        }
+    };
+
+    const downloadFolderRecursive = async (id) => {
         try {
             const data = await fetchFolder(id);
-
             const zip = new JSZip();
-
-            // Process all children
-            const childType = data.childType || "File"; // Default to "File" if not specified
+            const childType = data.childType || "File"; // Default to "File"
 
             for (const child of data.children) {
                 if (childType === "Folder") {
                     // Recursive case: child is a folder
-                    const childFolderPath = folderPath ? `${folderPath}/${child.name}` : child.name;
-
-                    // Recursively download the child folder
-                    const childZip = await downloadFolder(child._id, childFolderPath);
-
-                    if (childZip) {
-                        // Add all files from child folder to current zip
-                        // Use async approach to properly extract file content
-                        const promises = [];
-                        childZip.forEach((relativePath, file) => {
-                            // Skip directory entries
-                            if (!file.dir) {
-                                promises.push(
-                                    file
-                                        .async("blob")
-                                        .then((content) => {
-                                            zip.file(relativePath, content);
-                                        })
-                                        .catch((error) => {
-                                            console.error(
-                                                `Error processing file ${relativePath}:`,
-                                                error
-                                            );
-                                        })
-                                );
-                            }
-                        });
-                        await Promise.all(promises);
-                    }
+                    const childZip = await downloadFolderRecursive(child._id);
+                    // Merge the child zip into the main zip under its folder name
+                    await mergeZip(zip, childZip, child.name);
                 } else {
-                    // Base case: child is a file
-                    try {
-                        const fileResponse = await fetch(`${server}/api/files/download`, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({ url: child.webUrl }),
-                        });
-
-                        if (!fileResponse.ok) {
-                            toast.error(`Failed to download file: ${child.name}`);
-                            continue;
-                        }
-
-                        const fileData = await fileResponse.json();
-                        const downloadLink = fileData.downloadLink;
-
-                        const curfile = await fetch(downloadLink);
-                        const fileBlob = await curfile.blob();
-
-                        // Add file to zip with proper folder structure
-                        const filePath = folderPath ? `${folderPath}/${child.name}` : child.name;
-                        zip.file(filePath, fileBlob);
-                    } catch (error) {
-                        console.error(`Error downloading file ${child.name}:`, error);
-                        toast.error(`Failed to download file: ${child.name}`);
-                    }
+                    await fetchAndZipFile(child, zip);
                 }
             }
-
             return zip;
         } catch (error) {
             console.error(`Error downloading folder content:`, error);
@@ -190,52 +184,83 @@ const FolderInfo = ({
     };
 
     // Usage function remains the same
-    const downloadAndSaveFolder = async (folderId, folderName = "folder") => {
+    const downloadAndSaveFolder = async (currentFolderId, currentFolderName) => {
         if (isDownloading) return;
 
         let toastId;
         try {
             setIsDownloading(true);
-            // Create a persistent toast that doesn't auto-close
-            toastId = toast.info("Preparing to download folder...", {
+            toastId = toast.info("Preparing to download...", {
                 autoClose: false,
                 closeOnClick: false,
                 closeButton: false,
                 draggable: false,
             });
 
-            // Use either the fixed version or the alternative approach
-            const zip = await downloadFolder(folderId);
-            // const zip = await downloadFolderAlternative(folderId);
+            let zipToSave;
+            let zipFileName;
+            const totalSelected = selectedFolderData.length + selectedFileData.length;
 
-            if (!zip) {
-                toast.dismiss(toastId);
-                toast.error("Failed to create folder archive.");
-                return;
+            // --- CHECK FOR SELECTED ITEMS ---
+            if (totalSelected > 0) {
+                // CASE 1: Download selected items
+                toast.update(toastId, {
+                    render: `Zipping ${totalSelected} selected items...`,
+                });
+                
+                const rootZip = new JSZip();
+                
+                // Create zip name as requested
+                const timestamp = new Date().toISOString().replace(/:/g, '-').slice(0, 19);
+                // Use the `path` prop (parent dir) for the name
+                const safePath = path.replace(/[\/\\ >]/g, '_') || 'selection';
+                zipFileName = `coursehub-${safePath}-selected-${timestamp}.zip`;
+
+                for (const folder of selectedFolderData) {
+                    // Download each selected folder recursively
+                    const itemZip = await downloadFolderRecursive(folder._id);
+                    if (itemZip) {
+                        // Merge it into the root zip under its own name
+                        await mergeZip(rootZip, itemZip, folder.name);
+                    }
+                }
+
+                for (const file of selectedFileData) {
+                    await fetchAndZipFile(file, rootZip);
+                }
+                zipToSave = rootZip;
+
+            } else {
+                // CASE 2: No selection, download the current folder (default behavior)
+                toast.update(toastId, { render: "Zipping current folder..." });
+                zipToSave = await downloadFolderRecursive(currentFolderId);
+                zipFileName = `${currentFolderName}.zip`;
             }
 
-            // Generate the final ZIP blob
-            const zipBlob = await zip.generateAsync({
+            if (!zipToSave) {
+                throw new Error("Failed to create folder archive.");
+            }
+
+            // Generate and save the final ZIP
+            const zipBlob = await zipToSave.generateAsync({
                 type: "blob",
                 compression: "DEFLATE",
                 compressionOptions: { level: 6 },
             });
 
-            // Save the ZIP file using saveAs
-            saveAs(zipBlob, `${folderName}.zip`);
+            saveAs(zipBlob, zipFileName);
 
             toast.dismiss(toastId);
-            toast.success("Folder Ready for download!");
+            toast.success("Download ready!");
         } catch (error) {
             console.error("Error in downloadAndSaveFolder:", error);
-            if (toastId) {
-                toast.dismiss(toastId);
-            }
+            if (toastId) toast.dismiss(toastId);
             toast.error("Failed to download folder.");
         } finally {
             setIsDownloading(false);
         }
     };
+
     return (
         <>
             <div className="folder-info">
@@ -274,7 +299,13 @@ const FolderInfo = ({
                             disabled={isDownloading}
                         >
                             <span className="icon download-icon"></span>
-                            <span className="text">{isDownloading ? "Download" : "Download"}</span>
+                            <span className="text">
+                                {isDownloading
+                                    ? "Zipping..."
+                                    : (selectedFolderData.length + selectedFileData.length) > 0
+                                    ? `Download (${selectedFolderData.length + selectedFileData.length})`
+                                    : "Download"}
+                            </span>
                         </button>
 
                         {/* Conditional action buttons */}

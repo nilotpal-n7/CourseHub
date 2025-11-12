@@ -5,6 +5,8 @@
     border: 1px solid rgba(0, 0, 0, 0.32);
     margin-right: 14px;
     margin-bottom: 15px;
+    position: relative;
+
     &.verified {
         border: 2px solid #4caf50;
     }
@@ -12,6 +14,66 @@
     &.unverified {
         border: 2px solid #f44336;
     }
+
+    &.selected {
+        // Use a border color that stands out from verified/unverified
+        border: 2px solid #007bff; 
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    }
+
+    .select-checkbox {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        width: 22px;
+        height: 22px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 2px solid #adb5bd; // Gray border
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 10; // Make sure it's above .img-preview
+        display: none; // Hidden by default
+        transition: all 0.2s ease;
+
+        &.selected {
+            display: block; // Show if selected
+            background-color: #007bff; // Blue background
+            border-color: #007bff;
+            
+            &::after { // Simple checkmark
+                content: '✓';
+                color: white;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 14px;
+                font-weight: bold;
+            }
+        }
+
+        // Responsive adjustments for checkbox
+        @media (max-width: 768px) {
+            top: 6px;
+            left: 6px;
+            width: 18px;
+            height: 18px;
+            &.selected::after {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            top: 4px;
+            left: 4px;
+            width: 16px;
+            height: 16px;
+            &.selected::after {
+                font-size: 9px;
+            }
+        }
+    }
+
     .img-preview {
         width: 100%;
         height: 140px;
@@ -21,11 +83,13 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: top;
+
         .top,
         .view {
             transition: opacity 200ms ease;
             opacity: 0;
         }
+
         .top {
             .verify {
                 background: url(./assets/Verify.svg), none;
@@ -42,16 +106,19 @@
             .star {
                 background: url(./assets/Favorites.svg), none;
             }
+
             height: 30%;
             width: 100%;
             background-color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
+
             .share,
             .download,
             .star,
             .verify,
+
             .unverify {
                 display: block;
                 width: 24px;
@@ -61,8 +128,10 @@
                 background-repeat: no-repeat;
                 background-position: center;
                 background-size: contain;
+                z-index: 5; // Ensure buttons are clickable over checkbox
             }
         }
+
         .view {
             cursor: pointer;
             height: 70%;
@@ -74,6 +143,7 @@
             justify-content: center;
         }
     }
+
     .content {
         height: 80px;
         display: flex;
@@ -81,6 +151,7 @@
         padding: 10px 0;
         flex-direction: column;
         text-align: center;
+
         .title {
             font-size: 1rem;
         }
@@ -90,8 +161,17 @@
             color: rgba(0, 0, 0, 0.68);
         }
     }
+
     &:hover {
         border: 1px solid #000;
+
+        .select-checkbox {
+            display: block;
+        }
+        &.selected {
+             border: 2px solid #007bff; // Re-assert selected border on hover
+        }
+
         .img-preview {
             .top,
             .view {
@@ -114,6 +194,7 @@
                 .download,
                 .star,
                 .verify,
+
                 .unverify {
                     width: 20px;
                     height: 20px;
@@ -129,7 +210,6 @@
             .title {
                 font-size: 0.75rem;
             }
-
             .info,
             .contributor {
                 font-size: 0.65rem;
@@ -151,6 +231,7 @@
                 .download,
                 .star,
                 .verify,
+
                 .unverify {
                     width: 18px;
                     height: 18px;
@@ -166,7 +247,6 @@
             .title {
                 font-size: 0.7rem;
             }
-
             .info,
             .contributor {
                 font-size: 0.6rem;
